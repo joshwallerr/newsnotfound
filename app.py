@@ -158,7 +158,7 @@ def get_urls(topic):
 
 
 def get_story(headlines):
-    prompt = (f"Find as many headlines as you can from the below list of news headlines, that are about the exact same story. Output the related headlines in a python list format, where each list item is a list of contextually matched headlines, with no other text above or below. Only include stories that have at least 2 other headlines associated with them. The outputted list cannot have more than 3 items in it, so choose the headlines that you include in the list wisely.\n\n{headlines}\n\n")
+    prompt = (f"Find as many headlines as you can from the below list of news headlines, that are about the exact same story. Output the related headlines in a python list format, where each list item is a list of contextually matched headlines, with no other text above or below. Only include stories that have at least 2 other headlines associated with them. The outputted list cannot have more than 3 items in it, so choose the headlines that you include in the list wisely.\n\n{headlines}")
 
     try:
         response = openai.Completion.create(
@@ -171,11 +171,7 @@ def get_story(headlines):
             presence_penalty=0
         )
         related_headlines = response["choices"][0]["text"]
-        # related_headlines = related_headlines.replace("\\'", "'").replace('\\"', '"').replace('\\‘', '‘').replace('\\’', '’')
-        # related_headlines = related_headlines.replace("\\'", "'")
-        # related_headlines = related_headlines.replace("\\’", "’")
-        related_headlines = related_headlines.replace("\\'", "\'")
-        print(related_headlines)
+        related_headlines = related_headlines.replace("', '", "^!!").replace("['", "^^!").replace("'], ", "^^^").replace("']]", "^!^").replace("'", "\\'").replace('"', '\\"').replace('‘', '\\‘').replace('’', '\\’').replace(',', '\\,').replace("^!!", "', '").replace("^^!", "['").replace("^^^", "'], ").replace("^!^", "']]")
         related_headlines = ast.literal_eval(related_headlines)
     except: 
         response = openai.Completion.create(
@@ -188,9 +184,6 @@ def get_story(headlines):
             presence_penalty=0
         )
         related_headlines = response["choices"][0]["text"]
-        # related_headlines = related_headlines.replace("\\'", "'").replace('\\"', '"').replace('\\‘', '‘').replace('\\’', '’')
-        # related_headlines = related_headlines.replace("\\'", "'")
-        # related_headlines = related_headlines.replace("\\’", "’")
         related_headlines = related_headlines.replace("\\'", "\'")
         print(related_headlines)
         related_headlines = ast.literal_eval(related_headlines)
