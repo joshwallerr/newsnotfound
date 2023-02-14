@@ -38,60 +38,61 @@ wordpress_header = {'Authorization': 'Basic ' + wordpress_token.decode('utf-8')}
 def main():
     create_covered_csv()
 
-    print(sys.argv[1])
+    # print(sys.argv[1])
     urls = get_urls(sys.argv[1])
 
     all_headlines_links = headlines_links(urls)
 
     all_headlines = all_headlines_links.keys()
-    print(all_headlines)
+    # print(all_headlines)
 
     # Choose most relavent headlines
     story_headlines = get_story(escape_quotes(all_headlines))
-    # print('\n')
-    # print(story_headlines)
+    # # print('\n')
+    # # print(story_headlines)
 
     # Check relavence of chosen headlines
     story_headlines = check_relevance(story_headlines)
-    print('\n')
+    # print('\n')
     print(story_headlines)
 
     # Scrape articles
     scraped_articles = scrape_articles(unescape_quotes(story_headlines), all_headlines_links)
-    print(scraped_articles)
+    # print(scraped_articles)
 
     # Get points
     story_points = get_points(scraped_articles)
-    print(story_points)
+    # print(story_points)
 
     # Generate article
     article = generate_article(story_points)
-    print(article)
+    # print(article)
 
-    print('--------------- ARTICLE SEPARATOR ------------------')
+    # print('--------------- ARTICLE SEPARATOR ------------------')
 
     # Check for, and remove bias
     article = bias_checker(article)
-    print(article)
 
     # Formatting to start a new line after every sentence
-    article = article.replace(". ", ".\n\n")
+    article = format_article(article)
+    print('--------------- ARTICLE SEPARATOR ------------------')
+    print(article)
 
     # Generate headline
     article_headline = generate_headline(article)
-    print(article_headline)
+    # print(article_headline)
 
     # Generate slug
     article_slug = generate_slug(article_headline)
-    print(article_slug)
+    # print(article_slug)
 
     # Convert article to html
     html_article = html_converter(article)
-    print(html_article)
+    # print(html_article)
 
     # Generate html list
     html_list = generate_html_list(html_article)
-    print(html_list)
+    # print(html_list)
 
     # Combine and prepare article content
     html_content = f'<h3 class=\"title_seps\">At a glance</h3>{html_list}<h3 class=\"title_seps\">The details</h3>{html_article}'
@@ -185,7 +186,7 @@ def get_story(headlines):
         )
         related_headlines = response["choices"][0]["text"]
         related_headlines = related_headlines.replace("\\'", "\'")
-        print(related_headlines)
+        # print(related_headlines)
         related_headlines = ast.literal_eval(related_headlines)
 
     for headlines in related_headlines:
@@ -206,7 +207,7 @@ def get_points(articles):
     points = []
     for article in articles:
         if len(article) <= 10:
-            print('Passing article')
+            # print('Passing article')
             continue
 
         prompt = f'Based on the following article, please create as many bullet points as you can about all of the information. Please keep the bullet points as neutral and unbiased as possible, and feel free to change the wording of things (except quotes) to remove any biased tones and language - stick to neutral facts only. Please only output the bulleted list, nothing else. \n\n{article}'
@@ -254,28 +255,34 @@ def bias_checker(article):
     recursive_count = 0
     while bias_rating != 5:
         if recursive_count == 3:
-            raise Exception('Reached max recursions. Could not remove bias.')
+            if bias_rating == 4 or bias_rating == 6:
+                return new_article
+            else:
+                raise Exception('Reached max recursions. Could not remove bias.')
 
-        prompt = (f"Please look at the below news article and reword any instances of bias, whether positive or negative, so that the whole news article is completely unbiased and doesn't push any particular narrative - the purpose is to inform readers, not push an opinion:\n\n{article}")
-        print(prompt)
-        response = openai.Completion.create(
-            engine="text-davinci-003",
-            prompt=prompt,
-            max_tokens=2500,
-            temperature=0,
-            top_p=1,
-            frequency_penalty=0,
-            presence_penalty=0,
-        )
-        article = response["choices"][0]["text"]
+        para_list = article.split("\n")
+        para_list = [item.strip() for item in para_list if item.strip() != ""]
+
+        new_paras = []
+        for para in para_list:
+            prompt = (f"Please look at the below paragraph from a news article and reword any instances of bias, whether positive or negative, so that the whole paragraph is completely unbiased and doesn't push any particular narrative - the purpose is to inform readers, not push an opinion:\n\n{para}")
+            response = openai.Completion.create(
+                engine="text-davinci-003",
+                prompt=prompt,
+                max_tokens=500,
+                temperature=0,
+                top_p=1,
+                frequency_penalty=0,
+                presence_penalty=0,
+            )
+            new_paras.append(response["choices"][0]["text"])
+        article = " ".join(new_paras)
         recursive_count += 1
         bias_rating = calculate_bias(article)
         print(bias_rating)
-        print(response)
 
     print('Passed bias test')
     return article
-
 
 def generate_headline(article):
     prompt = (f"Please generate me a short, unbiased headline for the below news article. The headlines must not contain more than 65 characters. Please just output the headline: {article}")
@@ -289,7 +296,7 @@ def generate_headline(article):
         presence_penalty=0
     )
     article_headline = response["choices"][0]["text"]
-    print(article_headline)
+    # print(article_headline)
     return article_headline
 
 
@@ -313,7 +320,7 @@ def html_converter(article):
         presence_penalty=0
     )
     html_article = response["choices"][0]["text"]
-    print(html_article)
+    # print(html_article)
     return html_article
 
 
@@ -329,7 +336,7 @@ def generate_html_list(html_article):
         presence_penalty=0
     )
     html_list = response["choices"][0]["text"]
-    print(html_list)
+    # print(html_list)
     return html_list
 
 
@@ -417,6 +424,24 @@ def unescape_quotes(list_of_strings):
         unescaped_list.append(unescaped_item)
     return unescaped_list
 
+
+def format_article(article):
+    sentences = re.split(r'(?<=[a-z])[.!?](?=\s+[A-Z])', article)
+
+    print(sentences)
+
+    formatted_sentences = []
+    for sentence in sentences:
+        sentence = sentence.strip()
+        if sentence[-1] == ".":
+            sentence = sentence[:-1]
+        sentence = sentence + "."
+        sentence = "\n\n" + sentence[0].upper() + sentence[1:]
+        formatted_sentences.append(sentence)
+
+    formatted_article = ''.join(formatted_sentences)
+    return formatted_article
+
     
 def create_covered_csv():
     file_path = 'covered.csv'
@@ -450,13 +475,13 @@ def mark_covered(headlines):
 
 
 def check_relevance(headlines):
-    print(headlines)
+    # print(headlines)
     recursive_count = len(headlines)
     while len(headlines) > 2:
         if recursive_count == 0:
             break
 
-        print(len(headlines))
+        # print(len(headlines))
         stop_words = set(stopwords.words("english"))
 
         word_freq = {}
@@ -497,6 +522,12 @@ def check_relevance(headlines):
 
 # Scale: 5 = neutral, 10 = very positive, 0 = very negative
 def calculate_bias(text):
+    quoted_text = re.findall(r'[‘’“”\'\"].*?[‘’“”\'\"]', text)
+
+    # Replace the quoted text with an empty string
+    for quote in quoted_text:
+        text = text.replace(quote, '')
+    
     blob = TextBlob(text)
     total_sentiment = 0
     num_sentences = 0
