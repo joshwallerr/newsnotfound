@@ -60,6 +60,10 @@ def main():
     scraped_articles = scrape_articles(unescape_quotes(story_headlines), all_headlines_links)
     # print(scraped_articles)
 
+    # Choose longest article from list of scraped articles
+    scraped_article = choose_longest(scraped_articles)
+    # print(scraped_article)
+
     # Get points
     story_points = get_points(scraped_articles)
     # print(story_points)
@@ -68,10 +72,11 @@ def main():
     article = generate_article(story_points)
     # print(article)
 
-    # print('--------------- ARTICLE SEPARATOR ------------------')
+    print('--------------- ARTICLE SEPARATOR ------------------')
 
     # Check for, and remove bias
     article = bias_checker(article)
+    print(article)
 
     # Formatting to start a new line after every sentence
     article = format_article(article)
@@ -203,6 +208,17 @@ def get_story(headlines):
         raise Exception('All stories covered')
 
 
+def choose_longest(articles):
+    longest = 0
+    longest_article = ['']
+    for article in articles:
+        if len(article) > longest:
+            longest = len(article)
+            longest_article[0] = article
+
+    return longest_article
+
+
 def get_points(articles):
     points = []
     for article in articles:
@@ -255,10 +271,10 @@ def bias_checker(article):
     recursive_count = 0
     while bias_rating != 5:
         if recursive_count == 3:
-            if bias_rating == 4 or bias_rating == 6:
-                return new_article
-            else:
-                raise Exception('Reached max recursions. Could not remove bias.')
+            # if bias_rating == 4 or bias_rating == 6:
+            #     return new_article
+            # else:
+            raise Exception('Reached max recursions. Could not remove bias.')
 
         para_list = article.split("\n")
         para_list = [item.strip() for item in para_list if item.strip() != ""]
@@ -276,6 +292,7 @@ def bias_checker(article):
                 presence_penalty=0,
             )
             new_paras.append(response["choices"][0]["text"])
+        print(new_paras)
         article = " ".join(new_paras)
         recursive_count += 1
         bias_rating = calculate_bias(article)
@@ -309,7 +326,7 @@ def generate_slug(headline):
 
 
 def html_converter(article):
-    prompt = (f"Please convert every single sentence (ending with a period) in the following news article to seperate html paragraph tags. Also, format the article with a maximum of three h4 subheadings where possible. Also, bold the key information with <strong> tags (try to only bold text where necessary): {article}")
+    prompt = (f"Please convert this entire news article to html, where each line is a p tag. Also, format the article with a maximum of three h4 subheadings where possible. Also, bold the key information with <strong> tags (try to only bold text where necessary): {article}")
     response = openai.Completion.create(
         engine="text-davinci-003",
         prompt=prompt,
@@ -325,7 +342,7 @@ def html_converter(article):
 
 
 def generate_html_list(html_article):
-    prompt = (f"Please generate a html formatted, unordered list of short bullet points about the key information in the following article: {html_article}")
+    prompt = (f"Please generate a html formatted, unordered list of short bullet points about the key information in the following article. Try to only include a maximum of 5 bullet points: {html_article}")
     response = openai.Completion.create(
         engine="text-davinci-003",
         prompt=prompt,
@@ -428,7 +445,7 @@ def unescape_quotes(list_of_strings):
 def format_article(article):
     sentences = re.split(r'(?<=[a-z])[.!?](?=\s+[A-Z])', article)
 
-    print(sentences)
+    # print(sentences)
 
     formatted_sentences = []
     for sentence in sentences:
