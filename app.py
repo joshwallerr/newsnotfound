@@ -416,7 +416,7 @@ def create_wordpress_post(article, headline, slug, categories, image_id):
     api_url = 'https://newsnotfound.com/wp-json/wp/v2/posts'
     data = {
     'title' : headline,
-    'status': 'draft',
+    'status': 'publish',
     'slug' : slug,
     'content': article,
     "categories": categories,
