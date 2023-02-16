@@ -123,6 +123,9 @@ def scrape_articles(headlines, headlines_links):
             if headline in key:
                 urls.append(value)
 
+    if len(urls) == 0:
+        raise Exception('URL list empty. Could not locate headlines in dictionary of links.')
+
     print('URLS')
     print(urls)
 
