@@ -4,9 +4,12 @@ from bs4 import BeautifulSoup
 def headlines_links(urls):
     all_headlines_links = {}
 
+    recursive_count = 0
     for url in urls:
         response = requests.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
+
+        recursive_count += 16
 
         if 'telegraph.co.uk' in url:
             for headline in soup.find_all('a', class_='list-headline__link u-clickable-area__link'):
@@ -35,6 +38,10 @@ def headlines_links(urls):
                 all_headlines_links[headline_text] = headline_link
 
         if 'independent.co.uk' in url:
+            if recursive_count > 16:
+                recursive_count = 0
+                continue
+
             for article in soup.find_all('a', class_='title'):
                 headline_text = article.text
                 headline_link = 'https://www.independent.co.uk' + article['href']
@@ -110,10 +117,13 @@ def headlines_links(urls):
 def scrape_articles(headlines, headlines_links):
     urls = []
     for headline in headlines:
+        # print('HEADLINE IN SCRAPE ARTICLES')
+        # print(headline)
         for key, value in headlines_links.items():
             if headline in key:
                 urls.append(value)
 
+    print('URLS')
     print(urls)
 
     articles = []

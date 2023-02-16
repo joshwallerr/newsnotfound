@@ -44,7 +44,7 @@ def main():
     all_headlines_links = headlines_links(urls)
 
     all_headlines = all_headlines_links.keys()
-    # print(all_headlines)
+    print(all_headlines)
 
     # Choose most relavent headlines
     story_headlines = get_story(escape_quotes(all_headlines))
@@ -53,7 +53,7 @@ def main():
 
     # Check relavence of chosen headlines
     story_headlines = check_relevance(story_headlines)
-    # print('\n')
+    print('RELAVENT HEADLINES')
     print(story_headlines)
 
     # Scrape articles
