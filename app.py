@@ -49,7 +49,7 @@ def main():
     # Choose most relavent headlines
     story_headlines = get_story(escape_quotes(all_headlines))
     # # print('\n')
-    # # print(story_headlines)
+    print(story_headlines)
 
     # Check relavence of chosen headlines
     story_headlines = check_relevance(story_headlines)
@@ -62,10 +62,10 @@ def main():
 
     # Choose longest article from list of scraped articles
     scraped_article = choose_longest(scraped_articles)
-    # print(scraped_article)
+    print(scraped_article)
 
     # Get points
-    story_points = get_points(scraped_articles)
+    story_points = get_points(scraped_article)
     # print(story_points)
 
     # Generate article
