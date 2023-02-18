@@ -487,7 +487,7 @@ def check_covered(headlines):
 
     
 def mark_covered(headlines):
-    with open('covered.csv', 'a') as file:
+    with open(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'covered.csv'), 'a') as file:
         writer = csv.writer(file)
         for headline in headlines:
             now = datetime.datetime.now().strftime('%H:%M:%S')
