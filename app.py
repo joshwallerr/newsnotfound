@@ -313,6 +313,10 @@ def generate_headline(article):
         presence_penalty=0
     )
     article_headline = response["choices"][0]["text"]
+
+    if article_headline == '':
+        raise Exception('Failed to generate headline.')
+
     # print(article_headline)
     return article_headline
 
