@@ -7,3 +7,4 @@ test2.py
 __pycache__/
 covered.csv
 images/image.png
+logs.txt

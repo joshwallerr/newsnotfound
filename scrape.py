@@ -115,6 +115,11 @@ def headlines_links(urls):
 
 
 def scrape_articles(headlines, headlines_links):
+    print(headlines)
+
+    # Remove backslashes from headlines
+    headlines = [headline.replace('\\', '') for headline in headlines]
+
     urls = []
     for headline in headlines:
         # print('HEADLINE IN SCRAPE ARTICLES')
