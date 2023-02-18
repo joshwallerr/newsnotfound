@@ -401,7 +401,7 @@ def generate_image(headline):
 def upload_image():
     endpoint = "https://newsnotfound.com/wp-json/wp/v2/"
 
-    with open("/home/joshwallerr/Documents/new_newsnotfound/images/image.png", "rb") as f:
+    with open(os.path.abspath(os.path.join('images', 'image.png')), "rb") as f:
         file = {
             "file": f,
             "content_type": "image/png"
