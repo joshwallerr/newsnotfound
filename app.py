@@ -87,6 +87,10 @@ def main():
     article_headline = generate_headline(article)
     # print(article_headline)
 
+    # Prevent default output - temporary bug fix
+    if 'WHO Study Links Air Pollution to Increased' in article_headline:
+        raise Exception('Default article generated. Failed run.')
+
     # Generate slug
     article_slug = generate_slug(article_headline)
     # print(article_slug)
