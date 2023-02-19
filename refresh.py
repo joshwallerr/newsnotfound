@@ -1,5 +1,6 @@
 # CRON set to run script every 45mins - 1hour
 
+import os
 import csv
 import datetime
 
@@ -19,4 +20,4 @@ def remove_old_rows(filename):
         writer.writerows(updated_rows)
 
 if __name__ == "__main__":
-    remove_old_rows("covered.csv")
+    remove_old_rows(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'covered.csv'))
