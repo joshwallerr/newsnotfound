@@ -479,7 +479,7 @@ def create_covered_csv():
 
 
 def check_covered(headlines):
-    with open('covered.csv', 'r') as file:
+    with open(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'covered.csv'), 'r') as file:
         reader = csv.DictReader(file)
         for headline in headlines:
             for row in reader:
