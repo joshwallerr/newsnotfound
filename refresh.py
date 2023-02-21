@@ -1,4 +1,5 @@
 # CRON set to run script every 45mins - 1hour
+# Temporarily unused - no headline should ever be covered twice, but the covered.csv file should be cleared regularly to prevent bloating. Updates to this file pending.
 
 import os
 import csv

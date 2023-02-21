@@ -334,7 +334,7 @@ def generate_slug(headline):
 
 
 def html_converter(article):
-    prompt = (f"Please convert this entire news article to html, where each line is a p tag. Also, format the article with a maximum of three h4 subheadings where possible. Also, bold the key information with <strong> tags (try to only bold text where necessary): {article}")
+    prompt = (f"Please convert this entire news article to html, where each line is a p tag. Also, format the article with a maximum of three h4 subheadings where possible: {article}")
     response = openai.Completion.create(
         engine="text-davinci-003",
         prompt=prompt,
