@@ -387,7 +387,7 @@ def generate_image(headline):
         verbose=True,
     )
 
-    sd_prompt = f"an oil painting that best visualises the following news headline: {headline}"
+    sd_prompt = f"an oil painting (with no frame) that best visualises the following news headline: {headline}"
 
     answers = stability_api.generate(
         prompt=sd_prompt
