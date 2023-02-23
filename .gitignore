@@ -8,3 +8,5 @@ __pycache__/
 covered.csv
 images/image.png
 logs.txt
+client_secrets.json
+refreshtoken.py

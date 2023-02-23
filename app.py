@@ -21,6 +21,7 @@ from stability_sdk import client
 import stability_sdk.interfaces.gooseai.generation.generation_pb2 as generation
 import json
 import sys
+from social import reddit_post
 
 basedir = path.abspath(path.dirname(__file__))
 load_dotenv(path.join(basedir, '.env'))
@@ -124,6 +125,9 @@ def main():
         print('Successfully pushed post to Wordpress!')
     else:
         raise Exception('Could not push to Wordpress')
+    
+    # Post on subreddit
+    reddit_post(article_headline, article_slug)
 
 
 def get_urls(topic):
