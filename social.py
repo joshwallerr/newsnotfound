@@ -1,7 +1,15 @@
 import json
 import praw
 import requests
+from os import environ, path
+from dotenv import load_dotenv
 import os
+from instagrapi import Client
+from instagrapi.types import Usertag
+
+basedir = path.abspath(path.dirname(__file__))
+load_dotenv(path.join(basedir, '.env'))
+
 
 def reddit_post(title, slug):
     subr = 'newsnotfound'
@@ -23,3 +31,7 @@ def reddit_post(title, slug):
     url = 'https://newsnotfound.com/' + slug
     
     subreddit.submit(title, url=url)
+
+def instagram_post(caption):
+    # Code here
+    print('Temp')

@@ -92,6 +92,10 @@ def main():
     if 'WHO Study Links Air Pollution to Increased' in article_headline:
         raise Exception('Default article generated. Failed run.')
 
+    # Generate excerpt
+    article_excerpt = generate_excerpt(article)
+    print(article_excerpt)
+
     # Generate slug
     article_slug = generate_slug(article_headline)
     # print(article_slug)
@@ -115,7 +119,7 @@ def main():
     featured_media_id = upload_image()
 
     # Create Wordpress post
-    response_code = create_wordpress_post(html_content, article_headline, article_slug, category_ids, featured_media_id)
+    response_code = create_wordpress_post(html_content, article_headline, article_excerpt, article_slug, category_ids, featured_media_id)
     print(response_code)
 
     # if 200 <= response_code.status_code <= 299:
@@ -128,6 +132,8 @@ def main():
     
     # Post on subreddit
     reddit_post(article_headline, article_slug)
+
+    # Post on Instagram
 
 
 def get_urls(topic):
@@ -329,6 +335,26 @@ def generate_headline(article):
     return article_headline
 
 
+def generate_excerpt(article):
+    prompt = (f"Please generate me a short, unbiased excerpt for the below news article. The excerpt should be relatively short, and no more than one sentence long. Please just output the excerpt: {article}")
+    response = openai.Completion.create(
+        engine="text-davinci-003",
+        prompt=prompt,
+        max_tokens=1000,
+        temperature=0.1,
+        top_p=1,
+        frequency_penalty=0,
+        presence_penalty=0
+    )
+    article_excerpt = response["choices"][0]["text"]
+
+    if article_excerpt == '':
+        raise Exception('Failed to generate headline.')
+
+    # print(article_excerpt)
+    return article_excerpt
+
+
 def generate_slug(headline):
     slug = headline
     slug = re.sub(r'[^\w\s]', '', slug) # remove all punctuation
@@ -424,10 +450,11 @@ def upload_image():
     return image_id
 
 
-def create_wordpress_post(article, headline, slug, categories, image_id):
+def create_wordpress_post(article, headline, excerpt, slug, categories, image_id):
     api_url = 'https://newsnotfound.com/wp-json/wp/v2/posts'
     data = {
     'title' : headline,
+    'excerpt': excerpt,
     'status': 'publish',
     'slug' : slug,
     'content': article,
