@@ -94,7 +94,7 @@ def main():
 
     # Generate excerpt
     article_excerpt = generate_excerpt(article)
-    print(article_excerpt)
+    # print(article_excerpt)
 
     # Generate slug
     article_slug = generate_slug(article_headline)
@@ -349,9 +349,7 @@ def generate_excerpt(article):
     article_excerpt = response["choices"][0]["text"]
 
     if article_excerpt == '':
-        raise Exception('Failed to generate headline.')
-
-    # print(article_excerpt)
+        return None
     return article_excerpt
 
 
@@ -454,7 +452,7 @@ def create_wordpress_post(article, headline, excerpt, slug, categories, image_id
     api_url = 'https://newsnotfound.com/wp-json/wp/v2/posts'
     data = {
     'title' : headline,
-    'excerpt': excerpt,
+    'excerpt' : excerpt,
     'status': 'publish',
     'slug' : slug,
     'content': article,
