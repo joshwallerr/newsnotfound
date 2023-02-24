@@ -21,7 +21,7 @@ from stability_sdk import client
 import stability_sdk.interfaces.gooseai.generation.generation_pb2 as generation
 import json
 import sys
-from social import reddit_post
+from social import reddit_post, ig_post_image, generate_ig_caption, generate_ig_hashtags
 
 basedir = path.abspath(path.dirname(__file__))
 load_dotenv(path.join(basedir, '.env'))
@@ -116,7 +116,9 @@ def main():
 
     # Generate post image and get id
     generate_image(article_headline)
-    featured_media_id = upload_image()
+    image_id_url = upload_image()
+    featured_media_id = image_id_url[0]
+    featured_media_url = image_id_url[1]
 
     # Create Wordpress post
     response_code = create_wordpress_post(html_content, article_headline, article_excerpt, article_slug, category_ids, featured_media_id)
@@ -133,7 +135,17 @@ def main():
     # Post on subreddit
     reddit_post(article_headline, article_slug)
 
-    # Post on Instagram
+    # Get Instagram hashtags
+    ig_tags = generate_ig_hashtags(sys.argv[1])
+
+    # Get IG caption
+    if article_excerpt == None:
+        ig_caption = generate_ig_caption(article_headline, ig_tags)
+    else:
+        ig_caption = generate_ig_caption(article_excerpt, ig_tags)
+
+    # Post Instagram image
+    ig_post_image(ig_caption, featured_media_url)
 
 
 def get_urls(topic):
@@ -444,8 +456,10 @@ def upload_image():
             files=file
         )
 
-    image_id = image_response.json().get("id")
-    return image_id
+    image_id_url = []
+    image_id_url.append(image_response.json().get("id"))
+    image_id_url.append(image_response.json().get("source_url"))
+    return image_id_url
 
 
 def create_wordpress_post(article, headline, excerpt, slug, categories, image_id):
