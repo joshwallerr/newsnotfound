@@ -132,20 +132,23 @@ def main():
     else:
         raise Exception('Could not push to Wordpress')
     
-    # Post on subreddit
-    reddit_post(article_headline, article_slug)
+    social_exclusions = ['teesside']
 
-    # Get Instagram hashtags
-    ig_tags = generate_ig_hashtags(sys.argv[1])
+    if sys.argv[1] not in social_exclusions:
+        # Post on subreddit
+        reddit_post(article_headline, article_slug)
 
-    # Get IG caption
-    if article_excerpt == None:
-        ig_caption = generate_ig_caption(article_headline, ig_tags)
-    else:
-        ig_caption = generate_ig_caption(article_excerpt, ig_tags)
+        # Get Instagram hashtags
+        ig_tags = generate_ig_hashtags(sys.argv[1])
 
-    # Post Instagram image
-    ig_post_image(ig_caption, featured_media_url)
+        # Get IG caption
+        if article_excerpt == None:
+            ig_caption = generate_ig_caption(article_headline, ig_tags)
+        else:
+            ig_caption = generate_ig_caption(article_excerpt, ig_tags)
+
+        # Post Instagram image
+        ig_post_image(ig_caption, featured_media_url)
 
 
 def get_urls(topic):
@@ -182,6 +185,11 @@ def get_urls(topic):
             'https://www.bbc.co.uk/news/world/us_and_canada',
             'https://eu.usatoday.com/news/',
             'https://www.independent.co.uk/news/world/americas'
+        ]
+    elif topic == 'teesside':
+        urls = [
+            'https://www.gazettelive.co.uk/news/teesside-news/',
+            'https://www.thenorthernecho.co.uk/news/local/teesside/',
         ]
     else:
         raise Exception('Please provide one of the following arguments: world, science, tech, business, uk, us')
@@ -415,6 +423,8 @@ def get_categories(topic):
         categories = [42]
     elif topic == 'us':
         categories = [6]
+    elif topic =='teesside':
+        categories = [83]
     else:
         raise Exception('Please provide one of the following arguments: world, science, tech, business, uk, us')
 

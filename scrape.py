@@ -111,6 +111,32 @@ def headlines_links(urls):
                 headline_link = 'https://eu.usatoday.com' + article['href']
                 all_headlines_links[headline_text] = headline_link
 
+        if 'newsnotfound.com' in url:
+            article_div = soup.find('div', class_='main-banner-block-posts banner-trailing-posts')
+            for article in article_div.find_all('h2', class_="post-title"):
+                headline_text = article.find('a').text
+                headline_link = article.find('a')['href']
+                all_headlines_links[headline_text] = headline_link
+
+        if 'gazettelive.co.uk' in url:
+            for article in soup.find_all('a', class_="headline"):
+                headline_text = article.text
+                headline_link = article['href']
+                all_headlines_links[headline_text] = headline_link
+
+        if 'thenorthernecho.co.uk' in url:
+            # Get hero item
+            for article in soup.find_all('a', class_='mar-lead-story__link'):
+                headline_text = article.find('span').text
+                headline_link = 'https://www.thenorthernecho.co.uk' + article['href']
+                all_headlines_links[headline_text] = headline_link
+
+            for article in soup.find_all('a', class_='text-slate no-underline'):
+                headline_text = article.text
+                headline_link = 'https://www.thenorthernecho.co.uk' + article['href']
+                all_headlines_links[headline_text] = headline_link
+
+
     return all_headlines_links
 
 
@@ -224,7 +250,27 @@ def scrape_articles(headlines, headlines_links):
                     if "Read more" in text or 'Please use Chrome browser' in text or 'Click to subscribe' in text:
                             continue
                     temp_article += "\n\n" + text
-                    
+
+            if 'gazettelive.co.uk' in url:
+                article_div = soup.find('div', class_='article-body')
+                for p in article_div.find_all('p', recursive=False):
+                    text = p.get_text()
+                    if "READ" in text:
+                        continue
+                    temp_article += "\n\n" + text
+
+            if 'thenorthernecho.co.uk' in url:
+                # Get first paragraph
+                first_para = soup.find('p', class_='article-first-paragraph').get_text()
+                temp_article += '\n\n' + first_para
+
+                article_div = soup.find('div', id='subscription-content')
+                for p in article_div.find_all('p', recursive=False):
+                    text = p.get_text()
+                    if "Read next" in text or 'Read more' in text or 'To get more stories direct' in text or 'Get more from The Northern Echo' in text:
+                        continue
+                    temp_article += '\n\n' + text
+
             articles.append(temp_article)
         except:
             pass

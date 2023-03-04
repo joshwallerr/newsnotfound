@@ -89,3 +89,8 @@ def generate_ig_hashtags(topic):
         tags = '#usnews #usanews #united_states #ainews #conservativenews #democratnews'
 
     return tags 
+
+
+# nnf_hl = headlines_links(['https://newsnotfound.com/'])
+# three_headlines = list(nnf_hl.keys())[:3]
+# print(three_headlines)
