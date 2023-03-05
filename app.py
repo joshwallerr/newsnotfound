@@ -79,6 +79,8 @@ def main():
     article = bias_checker(article)
     print(article)
 
+    # AI Bias reviewer and editor?
+
     # Formatting to start a new line after every sentence
     article = format_article(article)
     print('--------------- ARTICLE SEPARATOR ------------------')
@@ -320,7 +322,7 @@ def bias_checker(article):
 
         new_paras = []
         for para in para_list:
-            prompt = (f"Please look at the below paragraph from a news article and reword any instances of bias, whether positive or negative, so that the whole paragraph is completely unbiased and doesn't push any particular narrative - the purpose is to inform readers, not push an opinion:\n\n{para}")
+            prompt = (f"You must take on the role of an article reviewer and editor for an unbiased news company. Your job is to look at the below paragraph and ensure that it is 100% neutral and unbiased. If you find any instances of biased words/phrases, or positive/negative language, you must rewrite or reword them in a completely unbiased and neutral way. Aim to be factual, not opinionated.\n\n{para}")
             response = openai.Completion.create(
                 engine="text-davinci-003",
                 prompt=prompt,
