@@ -8,8 +8,11 @@ import os
 basedir = path.abspath(path.dirname(__file__))
 load_dotenv(path.join(basedir, '.env'))
 
-ig_id = environ.get('INSTAGRAM_ACCOUNT_ID')
-igfb_access_token = environ.get('IGFB_ACCESS_TOKEN')
+fb_id_newsnotfound = environ.get('FACEBOOK_PAGE_ID')
+fb_id_newsnotfound_teesside = environ.get('FACEBOOK_PAGE_ID_TEESSIDE')
+ig_id_newsnotfound = environ.get('INSTAGRAM_ACCOUNT_ID')
+fb_access_token_newsnotfound = environ.get('FB_ACCESS_TOKEN_NEWSNOTFOUND')
+ig_access_token_newsnotfound = environ.get('IG_ACCESS_TOKEN_NEWSNOTFOUND')
 graph_url = 'https://graph.facebook.com/v16.0/'
 
 def reddit_post(title, slug):
@@ -34,7 +37,7 @@ def reddit_post(title, slug):
     subreddit.submit(title, url=url)
 
 
-def ig_post_image(caption, image_url, instagram_account_id=ig_id, access_token=igfb_access_token):
+def ig_post_image(caption, image_url, instagram_account_id=ig_id_newsnotfound, access_token=ig_access_token_newsnotfound):
     url = graph_url + instagram_account_id + '/media'
     param = dict()
     param['access_token'] = access_token
@@ -47,7 +50,21 @@ def ig_post_image(caption, image_url, instagram_account_id=ig_id, access_token=i
     ig_publish_container(response['id'], instagram_account_id, access_token)
 
 
-def ig_post_video(caption, video_url, instagram_account_id=ig_id, access_token=igfb_access_token):
+def fb_post_image(caption, image_url, facebook_account_id=fb_id_newsnotfound, access_token=fb_access_token_newsnotfound):
+    image_post_url = 'https://graph.facebook.com/{}/photos'.format(facebook_account_id)
+    
+    payload = {
+        'message': caption,
+        'url': image_url,
+        'access_token': access_token
+    }
+
+    #Send the POST request
+    response = requests.post(image_post_url, data=payload)
+    # print(response.text)
+
+
+def ig_post_video(caption, video_url, instagram_account_id=ig_id_newsnotfound, access_token=ig_access_token_newsnotfound):
     url = graph_url + instagram_account_id + '/media'
     param = dict()
     param['access_token'] = access_token
@@ -63,7 +80,7 @@ def ig_post_video(caption, video_url, instagram_account_id=ig_id, access_token=i
 
 
 # creation_id is container_id
-def ig_publish_container(creation_id, instagram_account_id=ig_id, access_token=igfb_access_token):
+def ig_publish_container(creation_id, instagram_account_id=ig_id_newsnotfound, access_token=ig_access_token_newsnotfound):
     url = graph_url + instagram_account_id + '/media_publish'
     param = dict()
     param['access_token'] = access_token
@@ -75,6 +92,12 @@ def ig_publish_container(creation_id, instagram_account_id=ig_id, access_token=i
 
 def generate_ig_caption(excerpt, hashtags):
     caption = excerpt + '\n\n' + hashtags
+    return caption
+
+
+def generate_fb_caption(excerpt, slug):
+    url = 'https://newsnotfound.com/' + slug
+    caption = excerpt + '\n\n' + 'Read the full story on our website: ' + url
     return caption
 
 

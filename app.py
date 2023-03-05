@@ -21,7 +21,7 @@ from stability_sdk import client
 import stability_sdk.interfaces.gooseai.generation.generation_pb2 as generation
 import json
 import sys
-from social import reddit_post, ig_post_image, generate_ig_caption, generate_ig_hashtags
+from social import reddit_post, ig_post_image, generate_ig_caption, generate_ig_hashtags, generate_fb_caption, fb_post_image
 
 basedir = path.abspath(path.dirname(__file__))
 load_dotenv(path.join(basedir, '.env'))
@@ -143,9 +143,14 @@ def main():
 
         # Get IG caption
         if article_excerpt == None:
+            fb_caption = generate_fb_caption(article_headline, article_slug)
             ig_caption = generate_ig_caption(article_headline, ig_tags)
         else:
+            fb_caption = generate_fb_caption(article_excerpt, article_slug)
             ig_caption = generate_ig_caption(article_excerpt, ig_tags)
+
+        # Post Facebook image
+        fb_post_image(fb_caption, featured_media_url)
 
         # Post Instagram image
         ig_post_image(ig_caption, featured_media_url)
