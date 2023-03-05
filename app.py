@@ -306,40 +306,27 @@ def generate_article(points):
 
 
 def bias_checker(article):
+    para_list = article.split("\n")
+    para_list = [item.strip() for item in para_list if item.strip() != ""]
+
+    new_paras = []
+    for para in para_list:
+        prompt = (f"You must take on the role of an article reviewer and editor for an unbiased news company. Your job is to look at the below paragraph and ensure that it is 100% neutral and unbiased. If you find any instances of biased words/phrases, or positive/negative language, you must rewrite or reword them in a completely unbiased and neutral way. Aim to be factual, not opinionated.\n\n{para}")
+        response = openai.Completion.create(
+            engine="text-davinci-003",
+            prompt=prompt,
+            max_tokens=500,
+            temperature=0,
+            top_p=1,
+            frequency_penalty=0,
+            presence_penalty=0,
+        )
+        new_paras.append(response["choices"][0]["text"])
+    print(new_paras)
+    article = " ".join(new_paras)
     bias_rating = calculate_bias(article)
     print(bias_rating)
 
-    recursive_count = 0
-    while bias_rating != 5:
-        if recursive_count == 3:
-            # if bias_rating == 4 or bias_rating == 6:
-            #     return new_article
-            # else:
-            raise Exception('Reached max recursions. Could not remove bias.')
-
-        para_list = article.split("\n")
-        para_list = [item.strip() for item in para_list if item.strip() != ""]
-
-        new_paras = []
-        for para in para_list:
-            prompt = (f"You must take on the role of an article reviewer and editor for an unbiased news company. Your job is to look at the below paragraph and ensure that it is 100% neutral and unbiased. If you find any instances of biased words/phrases, or positive/negative language, you must rewrite or reword them in a completely unbiased and neutral way. Aim to be factual, not opinionated.\n\n{para}")
-            response = openai.Completion.create(
-                engine="text-davinci-003",
-                prompt=prompt,
-                max_tokens=500,
-                temperature=0,
-                top_p=1,
-                frequency_penalty=0,
-                presence_penalty=0,
-            )
-            new_paras.append(response["choices"][0]["text"])
-        print(new_paras)
-        article = " ".join(new_paras)
-        recursive_count += 1
-        bias_rating = calculate_bias(article)
-        print(bias_rating)
-
-    print('Passed bias test')
     return article
 
 def generate_headline(article):
