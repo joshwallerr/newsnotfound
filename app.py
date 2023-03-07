@@ -91,7 +91,7 @@ def main():
     # print(article_headline)
 
     # Prevent default output - temporary bug fix
-    if 'WHO Study Links Air Pollution to Increased' in article_headline:
+    if 'WHO Study Links Air Pollution to Increased' in article_headline or 'WHO' in article_headline and 'Air Pollution' in article_headline:
         raise Exception('Default article generated. Failed run.')
 
     # Generate excerpt
@@ -199,7 +199,7 @@ def get_urls(topic):
             'https://www.thenorthernecho.co.uk/news/local/teesside/',
         ]
     else:
-        raise Exception('Please provide one of the following arguments: world, science, tech, business, uk, us')
+        raise Exception('Please provide one of the following arguments: world, science, tech, business, uk, us, teesside')
 
     return urls
 
@@ -330,7 +330,7 @@ def bias_checker(article):
     return article
 
 def generate_headline(article):
-    prompt = (f"Please generate me a short, unbiased headline for the below news article. The headlines must not contain more than 65 characters. Please just output the headline: {article}")
+    prompt = (f"You must take on the role of an article reviewer and editor for an unbiased news company. Your job is to look at the below article and generate a 100% neutral and unbiased headline. The headline should be effective at informing readers of what the article is about, whilst remaining completely neutral and unbiased. Aim to be factual, not opinionated. The headlines must not contain more than 65 characters. Just output the headline.\n\n{article}")
     response = openai.Completion.create(
         engine="text-davinci-003",
         prompt=prompt,
