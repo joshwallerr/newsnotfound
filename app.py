@@ -140,22 +140,22 @@ def main():
         # Post on subreddit
         reddit_post(article_headline, article_slug)
 
-        # Get Instagram hashtags
-        ig_tags = generate_ig_hashtags(sys.argv[1])
+    # Get Instagram hashtags
+    ig_tags = generate_ig_hashtags(sys.argv[1])
 
-        # Get IG caption
-        if article_excerpt == None:
-            fb_caption = generate_fb_caption(article_headline, article_slug)
-            ig_caption = generate_ig_caption(article_headline, ig_tags)
-        else:
-            fb_caption = generate_fb_caption(article_excerpt, article_slug)
-            ig_caption = generate_ig_caption(article_excerpt, ig_tags)
+    # Get IG caption
+    if article_excerpt == None:
+        fb_caption = generate_fb_caption(article_headline, article_slug)
+        ig_caption = generate_ig_caption(article_headline, ig_tags)
+    else:
+        fb_caption = generate_fb_caption(article_excerpt, article_slug)
+        ig_caption = generate_ig_caption(article_excerpt, ig_tags)
 
-        # Post Facebook image
-        fb_post_image(fb_caption, featured_media_url)
+    # Post Facebook image
+    fb_post_image(fb_caption, featured_media_url)
 
-        # Post Instagram image
-        ig_post_image(ig_caption, featured_media_url)
+    # Post Instagram image
+    ig_post_image(ig_caption, featured_media_url)
 
 
 def get_urls(topic):

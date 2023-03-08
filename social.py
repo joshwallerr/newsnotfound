@@ -4,16 +4,27 @@ import requests
 from os import environ, path
 from dotenv import load_dotenv
 import os
+import sys
 
 basedir = path.abspath(path.dirname(__file__))
 load_dotenv(path.join(basedir, '.env'))
 
-fb_id_newsnotfound = environ.get('FACEBOOK_PAGE_ID')
-fb_id_newsnotfound_teesside = environ.get('FACEBOOK_PAGE_ID_TEESSIDE')
-ig_id_newsnotfound = environ.get('INSTAGRAM_ACCOUNT_ID')
-fb_access_token_newsnotfound = environ.get('FB_ACCESS_TOKEN_NEWSNOTFOUND')
-ig_access_token_newsnotfound = environ.get('IG_ACCESS_TOKEN_NEWSNOTFOUND')
 graph_url = 'https://graph.facebook.com/v16.0/'
+
+
+if sys.argv[1] == 'uk' or sys.argv[1] == 'us' or sys.argv[1] == 'world' or sys.argv[1] == 'science':
+    fb_id = environ.get('FACEBOOK_PAGE_ID')
+    ig_id = environ.get('INSTAGRAM_ACCOUNT_ID')
+    fb_access_token = environ.get('FB_ACCESS_TOKEN_NEWSNOTFOUND')
+    ig_access_token = environ.get('IG_ACCESS_TOKEN_NEWSNOTFOUND')
+elif sys.argv[1] == 'teesside':
+    fb_id = environ.get('FACEBOOK_PAGE_ID_TEESSIDE')
+    ig_id = environ.get('INSTAGRAM_ACCOUNT_ID_TEESSIDE')
+    fb_access_token = environ.get('FB_ACCESS_TOKEN_NEWSNOTFOUND_TEESSIDE')
+    ig_access_token = environ.get('IG_ACCESS_TOKEN_NEWSNOTFOUND_TEESSIDE')
+else:
+    raise Exception('Please specify a topic.')
+
 
 def reddit_post(title, slug):
     subr = 'newsnotfound'
@@ -37,7 +48,7 @@ def reddit_post(title, slug):
     subreddit.submit(title, url=url)
 
 
-def ig_post_image(caption, image_url, instagram_account_id=ig_id_newsnotfound, access_token=ig_access_token_newsnotfound):
+def ig_post_image(caption, image_url, instagram_account_id=ig_id, access_token=ig_access_token):
     url = graph_url + instagram_account_id + '/media'
     param = dict()
     param['access_token'] = access_token
@@ -50,7 +61,7 @@ def ig_post_image(caption, image_url, instagram_account_id=ig_id_newsnotfound, a
     ig_publish_container(response['id'], instagram_account_id, access_token)
 
 
-def fb_post_image(caption, image_url, facebook_account_id=fb_id_newsnotfound, access_token=fb_access_token_newsnotfound):
+def fb_post_image(caption, image_url, facebook_account_id=fb_id, access_token=fb_access_token):
     image_post_url = 'https://graph.facebook.com/{}/photos'.format(facebook_account_id)
     
     payload = {
@@ -64,7 +75,7 @@ def fb_post_image(caption, image_url, facebook_account_id=fb_id_newsnotfound, ac
     # print(response.text)
 
 
-def ig_post_video(caption, video_url, instagram_account_id=ig_id_newsnotfound, access_token=ig_access_token_newsnotfound):
+def ig_post_video(caption, video_url, instagram_account_id=ig_id, access_token=ig_access_token):
     url = graph_url + instagram_account_id + '/media'
     param = dict()
     param['access_token'] = access_token
@@ -80,7 +91,7 @@ def ig_post_video(caption, video_url, instagram_account_id=ig_id_newsnotfound, a
 
 
 # creation_id is container_id
-def ig_publish_container(creation_id, instagram_account_id=ig_id_newsnotfound, access_token=ig_access_token_newsnotfound):
+def ig_publish_container(creation_id, instagram_account_id=ig_id, access_token=ig_access_token):
     url = graph_url + instagram_account_id + '/media_publish'
     param = dict()
     param['access_token'] = access_token
@@ -110,6 +121,8 @@ def generate_ig_hashtags(topic):
         tags = '#uknews #newsuk #ukcountrynews #united_kingdom #ig_united_kingdom #ainews'
     elif topic == 'us':
         tags = '#usnews #usanews #united_states #ainews #conservativenews #democratnews'
+    elif topic == 'teesside':
+        tags = '#teessidenews #boro #middlesbrough #northeast #teesside'
 
     return tags 
 
