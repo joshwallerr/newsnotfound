@@ -10,20 +10,20 @@ basedir = path.abspath(path.dirname(__file__))
 load_dotenv(path.join(basedir, '.env'))
 
 graph_url = 'https://graph.facebook.com/v16.0/'
-
+ig_access_token = environ.get('IG_ACCESS_TOKEN')
 
 if sys.argv[1] == 'uk' or sys.argv[1] == 'us' or sys.argv[1] == 'world' or sys.argv[1] == 'science':
     fb_id = environ.get('FACEBOOK_PAGE_ID')
     ig_id = environ.get('INSTAGRAM_ACCOUNT_ID')
     fb_access_token = environ.get('FB_ACCESS_TOKEN_NEWSNOTFOUND')
-    ig_access_token = environ.get('IG_ACCESS_TOKEN_NEWSNOTFOUND')
 elif sys.argv[1] == 'teesside':
     fb_id = environ.get('FACEBOOK_PAGE_ID_TEESSIDE')
     ig_id = environ.get('INSTAGRAM_ACCOUNT_ID_TEESSIDE')
     fb_access_token = environ.get('FB_ACCESS_TOKEN_NEWSNOTFOUND_TEESSIDE')
-    ig_access_token = environ.get('IG_ACCESS_TOKEN_NEWSNOTFOUND_TEESSIDE')
 else:
     raise Exception('Please specify a topic.')
+
+print
 
 
 def reddit_post(title, slug):
@@ -56,6 +56,7 @@ def ig_post_image(caption, image_url, instagram_account_id=ig_id, access_token=i
     param['image_url'] = image_url
     response = requests.post(url, params=param)
     response = response.json()
+    print(response)
     
     # Publish container
     ig_publish_container(response['id'], instagram_account_id, access_token)
