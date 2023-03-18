@@ -7,6 +7,7 @@ import os
 import sys
 import sqlite3
 import random
+import csv
 
 basedir = path.abspath(path.dirname(__file__))
 load_dotenv(path.join(basedir, '.env'))
@@ -178,7 +179,7 @@ def load_tiktok_data():
                 (id INTEGER PRIMARY KEY AUTOINCREMENT, stories TEXT, captions TEXT, used INTEGER DEFAULT 0)''')
 
     # Open the CSV file and read the data
-    with open('tiktok.csv', newline='') as csvfile:
+    with open(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'tiktok', 'tiktok.csv'), newline='') as csvfile:
         reader = csv.DictReader(csvfile)
         for row in reader:
             # Insert the row into the table
