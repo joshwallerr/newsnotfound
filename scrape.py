@@ -276,3 +276,15 @@ def scrape_articles(headlines, headlines_links):
             pass
 
     return articles
+
+
+def get_article_images(urls):
+    imgs = []
+    for url in urls:
+        response = requests.get(url)
+        soup = BeautifulSoup(response.content, 'html.parser')
+
+        if 'newsnotfound.com' in url:
+            img = soup.find('img', class_='attachment-post-thumbnail')
+            imgs.append(img.get('src'))
+    return imgs

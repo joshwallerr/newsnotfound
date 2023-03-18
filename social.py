@@ -5,6 +5,8 @@ from os import environ, path
 from dotenv import load_dotenv
 import os
 import sys
+import sqlite3
+import random
 
 basedir = path.abspath(path.dirname(__file__))
 load_dotenv(path.join(basedir, '.env'))
@@ -12,18 +14,20 @@ load_dotenv(path.join(basedir, '.env'))
 graph_url = 'https://graph.facebook.com/v16.0/'
 ig_access_token = environ.get('IG_ACCESS_TOKEN')
 
-if sys.argv[1] == 'uk' or sys.argv[1] == 'us' or sys.argv[1] == 'world' or sys.argv[1] == 'science':
+
+if len(sys.argv) > 1:
+    if sys.argv[1] == 'teesside':
+        fb_id = environ.get('FACEBOOK_PAGE_ID_TEESSIDE')
+        ig_id = environ.get('INSTAGRAM_ACCOUNT_ID_TEESSIDE')
+        fb_access_token = environ.get('FB_ACCESS_TOKEN_NEWSNOTFOUND_TEESSIDE')
+    else:
+        fb_id = environ.get('FACEBOOK_PAGE_ID')
+        ig_id = environ.get('INSTAGRAM_ACCOUNT_ID')
+        fb_access_token = environ.get('FB_ACCESS_TOKEN_NEWSNOTFOUND')
+else:
     fb_id = environ.get('FACEBOOK_PAGE_ID')
     ig_id = environ.get('INSTAGRAM_ACCOUNT_ID')
     fb_access_token = environ.get('FB_ACCESS_TOKEN_NEWSNOTFOUND')
-elif sys.argv[1] == 'teesside':
-    fb_id = environ.get('FACEBOOK_PAGE_ID_TEESSIDE')
-    ig_id = environ.get('INSTAGRAM_ACCOUNT_ID_TEESSIDE')
-    fb_access_token = environ.get('FB_ACCESS_TOKEN_NEWSNOTFOUND_TEESSIDE')
-else:
-    raise Exception('Please specify a topic.')
-
-print
 
 
 def reddit_post(title, slug):
@@ -126,6 +130,89 @@ def generate_ig_hashtags(topic):
         tags = '#teessidenews #boro #middlesbrough #northeast #teesside'
 
     return tags 
+
+
+def generate_tiktok_video(story1, story2, story3, funny_story, image_url1, image_url2):
+    elai_api_key = environ.get('ELAI_API_KEY')
+    url = "https://apis.elai.io/api/v1/videos/renderTemplate/63fa2cd8912ad050602ece2f"
+
+    print(img_url1)
+    print(img_url2)
+
+    payload = {
+        "templateData": [
+            {
+                "story1": story1,  # Start story 1
+                "canvastxt1": story1,
+                "475414051904": image_url1,  # 1st Image URL here
+                "story2": story2,  # Start story 2
+                "canvastxt2": story2,
+                "story3": story3,  # Start story 3
+                "canvastxt3": story3,
+                "515125141627": image_url2,  # 2nd Image URL here
+                "funnystory": funny_story,
+            },
+        ],
+        "emailNotification": True,
+        "fitTextBox": True
+    }
+    headers = {
+        "accept": "application/json",
+        "content-type": "application/json",
+        "Authorization": "Bearer " + elai_api_key
+    }
+
+    response = requests.post(url, json=payload, headers=headers)
+
+    print(response.text)
+    return response
+
+
+def load_tiktok_data():
+    # Connect to the database
+    conn = sqlite3.connect(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'tiktok', 'tiktok.db'))
+    c = conn.cursor()
+
+    # Create the table if it doesn't exist
+    c.execute('''CREATE TABLE IF NOT EXISTS tiktok
+                (id INTEGER PRIMARY KEY AUTOINCREMENT, stories TEXT, captions TEXT, used INTEGER DEFAULT 0)''')
+
+    # Open the CSV file and read the data
+    with open('tiktok.csv', newline='') as csvfile:
+        reader = csv.DictReader(csvfile)
+        for row in reader:
+            # Insert the row into the table
+            c.execute("INSERT INTO tiktok (stories, captions) VALUES (?, ?)", (row['stories'], row['captions']))
+            
+    # Commit the changes and close the connection
+    conn.commit()
+    conn.close()
+
+
+def get_tiktok_story_caption():
+    # Connect to the database
+    conn = sqlite3.connect(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'tiktok', 'tiktok.db'))
+    c = conn.cursor()
+
+    # Select a random row where used=0
+    c.execute("SELECT * FROM tiktok WHERE used=0 ORDER BY RANDOM() LIMIT 1")
+
+    # Fetch the data and store it in variables
+    data = c.fetchone()
+    if data is not None:
+        id_, funny_story, tiktok_caption, _ = data
+        # Update the row to set used=1
+        c.execute("UPDATE tiktok SET used=1 WHERE id=?", (id_,))
+        conn.commit()
+    else:
+        # No unused rows found
+        funny_story = ''
+        tiktok_caption = ''
+
+    # Close the database connection
+    conn.close()
+
+    return funny_story, tiktok_caption
 
 
 # nnf_hl = headlines_links(['https://newsnotfound.com/'])
