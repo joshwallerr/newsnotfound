@@ -137,15 +137,15 @@ def generate_tiktok_video(story1, story2, story3, funny_story, image_url1, image
     elai_api_key = environ.get('ELAI_API_KEY')
     url = "https://apis.elai.io/api/v1/videos/renderTemplate/63fa2cd8912ad050602ece2f"
 
-    print(img_url1)
-    print(img_url2)
+    print(image_url1)
+    print(image_url2)
 
     payload = {
         "templateData": [
             {
                 "story1": story1,  # Start story 1
                 "canvastxt1": story1,
-                "475414051904": image_url1,  # 1st Image URL here
+                "929527292291": image_url1,  # 1st Image URL here
                 "story2": story2,  # Start story 2
                 "canvastxt2": story2,
                 "story3": story3,  # Start story 3
@@ -166,7 +166,7 @@ def generate_tiktok_video(story1, story2, story3, funny_story, image_url1, image
     response = requests.post(url, json=payload, headers=headers)
 
     print(response.text)
-    return response
+    return response.text
 
 
 def load_tiktok_data():
@@ -214,6 +214,29 @@ def get_tiktok_story_caption():
     conn.close()
 
     return funny_story, tiktok_caption
+
+
+def retrieve_tiktok_video(video_id):
+    # Get video URL
+    elai_api_key = environ.get('ELAI_API_KEY')
+    url = f"https://apis.elai.io/api/v1/videos/{video_id}"
+
+    headers = {
+        "accept": "application/json",
+        "Authorization": "Bearer " + elai_api_key
+    }
+
+    response = requests.get(url, headers=headers)
+
+    print(response.text)
+    return response.text
+
+
+def download_tiktok_video(video_url):
+    response = requests.get(url)
+
+    with open(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'videos', 'video.mp4'), 'wb') as f:
+        f.write(response.content)
 
 
 # nnf_hl = headlines_links(['https://newsnotfound.com/'])
