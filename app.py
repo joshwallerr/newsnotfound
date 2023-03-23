@@ -345,6 +345,9 @@ def generate_headline(article):
     if article_headline == '':
         raise Exception('Failed to generate headline.')
 
+    if 'Headline: ' in article_headline:
+        article_headline = article_headline.replace("Headline: ", "")
+
     # print(article_headline)
     return article_headline
 

@@ -233,10 +233,30 @@ def retrieve_tiktok_video(video_id):
 
 
 def download_tiktok_video(video_url):
-    response = requests.get(url)
+    response = requests.get(video_url)
 
     with open(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'videos', 'video.mp4'), 'wb') as f:
         f.write(response.content)
+
+
+# def upload_tiktok_video(caption):
+
+#     # Your TikTok account credentials
+#     username = environ.get('TIKTOK_USERNAME')
+#     password = environ.get('TIKTOK_PASSWORD')
+
+#     # initialize TikTokApi with your TikTok account credentials
+#     api = TikTokApi(username=username, password=password)
+
+#     # Set the path of the video to upload
+#     video_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'videos', 'video.mp4')
+
+#     # upload the video and add the caption
+#     video_id = api.upload_video(video_path, caption=caption)
+
+#     # print the video ID
+#     print('Video uploaded with ID:', video_id)
+
 
 
 # nnf_hl = headlines_links(['https://newsnotfound.com/'])
