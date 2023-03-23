@@ -446,16 +446,17 @@ def generate_image(headline):
                 raise Exception('Safety filters activated, please remove inappropriate prompt.')
             if artifact.type == generation.ARTIFACT_IMAGE:
                 img = Image.open(io.BytesIO(artifact.binary))
-                img.save(path.join(basedir, 'images', 'image.png'), 'PNG')
+                img.save(path.join(basedir, 'images', 'image.webp'), 'webp')
+                # img.save(path.join(basedir, 'images', 'image.png'), 'png')
 
 
 def upload_image():
     endpoint = "https://newsnotfound.com/wp-json/wp/v2/"
 
-    with open(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'images', 'image.png'), "rb") as f:
+    with open(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'images', 'image.webp'), "rb") as f:
         file = {
             "file": f,
-            "content_type": "image/png"
+            "content_type": "image/webp"
         }
         image_response = requests.post(
             endpoint + "media",
