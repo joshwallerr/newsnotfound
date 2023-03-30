@@ -1,6 +1,6 @@
 # Cron set to run this script every 6 hours
 
-from scrape import headlines_links, scrape_articles
+from scrape import headlines_links, scrape_articles, get_urls
 import openai
 from os import environ, path
 from dotenv import load_dotenv
@@ -43,6 +43,7 @@ def main():
     urls = get_urls(sys.argv[1])
 
     all_headlines_links = headlines_links(urls)
+    print(all_headlines_links)
 
     all_headlines = all_headlines_links.keys()
     print(all_headlines)
@@ -56,6 +57,7 @@ def main():
     story_headlines = check_relevance(story_headlines)
     print('RELAVENT HEADLINES')
     print(story_headlines)
+
 
     # Scrape articles
     scraped_articles = scrape_articles(unescape_quotes(story_headlines), all_headlines_links)
@@ -109,6 +111,15 @@ def main():
     # Generate html list
     html_list = generate_html_list(html_article)
     # print(html_list)
+
+    # GENERATE SOURCES LIST
+    # links_to_headlines = get_urls(unescape_quotes(story_headlines), all_headlines_links)
+
+    # sources = dict(zip(unescape_quotes(story_headlines), links_to_headlines))
+    # print(sources)
+
+    # sources_html = generate_sources_list(sources)
+    # print(sources_html)
 
     # Combine and prepare article content
     html_content = f'<h3 class=\"title_seps\">At a glance</h3>{html_list}<h3 class=\"title_seps\">The details</h3>{html_article}'
@@ -342,6 +353,19 @@ def generate_headline(article):
     )
     article_headline = response["choices"][0]["text"]
 
+    if len(article_headline) > 120:
+        prompt = (f"You must take on the role of an article reviewer and editor for an unbiased news company. Your job is to look at the below article and generate a 100% neutral and unbiased headline. The headline should be effective at informing readers of what the article is about, whilst remaining completely neutral and unbiased. Aim to be factual, not opinionated. The headlines must not contain more than 65 characters. Just output the headline.\n\n{article}")
+        response = openai.Completion.create(
+            engine="text-davinci-003",
+            prompt=prompt,
+            max_tokens=1000,
+            temperature=0.5,
+            top_p=1,
+            frequency_penalty=0,
+            presence_penalty=0
+        )
+        article_headline = response["choices"][0]["text"]
+
     if article_headline == '':
         raise Exception('Failed to generate headline.')
 
@@ -408,6 +432,22 @@ def generate_html_list(html_article):
     html_list = response["choices"][0]["text"]
     # print(html_list)
     return html_list
+
+
+def generate_sources_list(sources):
+    prompt = (f"Please generate a html formatted, unordered list of sources for the following python dictionary of sources. Each source should be its own list item, and should link to the sources url. Sources {sources}")
+    response = openai.Completion.create(
+        engine="text-davinci-003",
+        prompt=prompt,
+        max_tokens=2042,
+        temperature=0,
+        top_p=1,
+        frequency_penalty=0,
+        presence_penalty=0
+    )
+    sources_list = response["choices"][0]["text"]
+    print(sources_list)
+    return sources_list
 
 
 def get_categories(topic):

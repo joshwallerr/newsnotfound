@@ -140,9 +140,7 @@ def headlines_links(urls):
     return all_headlines_links
 
 
-def scrape_articles(headlines, headlines_links):
-    print(headlines)
-
+def get_urls(headlines, headlines_links):
     # Remove backslashes from headlines
     headlines = [headline.replace('\\', '') for headline in headlines]
 
@@ -156,6 +154,14 @@ def scrape_articles(headlines, headlines_links):
 
     if len(urls) == 0:
         raise Exception('URL list empty. Could not locate headlines in dictionary of links.')
+    
+    return urls
+
+
+def scrape_articles(headlines, headlines_links):
+    print(headlines)
+
+    urls = get_urls(headlines, headlines_links)
 
     print('URLS')
     print(urls)
