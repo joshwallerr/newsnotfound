@@ -111,16 +111,16 @@ def main():
     # print(html_list)
 
     # GENERATE SOURCES LIST
-    # links_to_headlines = get_urls(chosen_headlines, all_headlines_links)
+    links_to_headlines = get_urls(chosen_headlines, all_headlines_links)
 
-    # sources = dict(zip(chosen_headlines, links_to_headlines))
-    # print(sources)
+    sources = dict(zip(chosen_headlines, links_to_headlines))
+    print(sources)
 
-    # sources_html = generate_sources_list(sources)
-    # print(sources_html)
+    sources_html = generate_sources_list(sources)
+    print(sources_html)
 
     # Combine and prepare article content
-    html_content = f'<h3 class=\"title_seps\">At a glance</h3>{html_list}<h3 class=\"title_seps\">The details</h3>{html_article}'
+    html_content = f'<h3 class=\"title_seps\">At a glance</h3>{html_list}<h3 class=\"title_seps\">The details</h3>{html_article}<h3 id=\"sources-head\">Sources</h3><div id=\"sources-list\">{sources_html}</div>'
 
     # Get categories
     category_ids = get_categories(CATEGORY)
@@ -359,7 +359,7 @@ def generate_html_list(html_article):
 
 
 def generate_sources_list(sources):
-    prompt = (f"Please generate a html formatted, unordered list of sources for the following python dictionary of sources. Each source should be its own list item, and should link to the sources url. Sources {sources}")
+    prompt = (f"Please generate a html formatted, unordered list of sources for the following python dictionary of sources. Each source should be its own list item, and should link to the sources url in a new tab (using target='_blank'). Sources {sources}")
     response = openai.Completion.create(
         engine="text-davinci-003",
         prompt=prompt,
