@@ -190,7 +190,7 @@ def scrape_articles(headlines, headlines_links):
                     temp_article += "\n\n" + text
 
             if 'washingtonpost.com' in url:
-                for div in soup.find_all("div", class_="ssrcss-rgov1k-MainColumn e1sbfw0p0"):
+                for div in soup.find_all("div", class_="article-body"):
                     for p in div.find_all("p"):
                         text = p.get_text()
                         if "Sign up to get the rest free, including news from around the globe and interesting ideas and opinions to know, sent to your inbox every weekday." in text:

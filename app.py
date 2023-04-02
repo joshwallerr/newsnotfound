@@ -22,6 +22,8 @@ import stability_sdk.interfaces.gooseai.generation.generation_pb2 as generation
 import json
 import sys
 from social import reddit_post, ig_post_image, generate_ig_caption, generate_ig_hashtags, generate_fb_caption, fb_post_image
+from choose_headlines import find_most_suitable_headlines
+
 
 basedir = path.abspath(path.dirname(__file__))
 load_dotenv(path.join(basedir, '.env'))
@@ -39,40 +41,36 @@ wordpress_header = {'Authorization': 'Basic ' + wordpress_token.decode('utf-8')}
 def main():
     create_covered_csv()
 
-    # print(sys.argv[1])
-    urls = get_urls(sys.argv[1])
+    CATEGORY = sys.argv[1]
 
-    all_headlines_links = headlines_links(urls)
-    print(all_headlines_links)
+    with open(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'data', 'headlines_links.json')) as f:
+        all_headlines_links = json.load(f)[CATEGORY]
 
-    all_headlines = all_headlines_links.keys()
-    print(all_headlines)
-
-    # Choose most relavent headlines
-    story_headlines = get_story(escape_quotes(all_headlines))
-    # # print('\n')
-    print(story_headlines)
-
-    # Check relavence of chosen headlines
-    story_headlines = check_relevance(story_headlines)
-    print('RELAVENT HEADLINES')
-    print(story_headlines)
-
+    # Choose the most suitable list of headlines
+    chosen_headlines = find_most_suitable_headlines(CATEGORY)
+    print(chosen_headlines)
 
     # Scrape articles
-    scraped_articles = scrape_articles(unescape_quotes(story_headlines), all_headlines_links)
-    # print(scraped_articles)
+    scraped_articles = scrape_articles(chosen_headlines, all_headlines_links)
+    print(scraped_articles)
 
-    # Choose longest article from list of scraped articles
-    scraped_article = choose_longest(scraped_articles)
-    print(scraped_article)
+    try:
+        # Get facts from scraped articles
+        facts = get_facts(scraped_articles)
+    except:
+        # Choose longest article if max tokens exceeded
+        scraped_article = choose_longest(scraped_articles)
+        facts = get_facts(scraped_article)
+    print('------------ FACTS ------------\n')
+    print(facts)
 
-    # Get points
-    story_points = get_points(scraped_article)
-    # print(story_points)
+
+    # Create article brief
+    brief = generate_brief(facts)
+    print(brief)
 
     # Generate article
-    article = generate_article(story_points)
+    article = generate_article(brief)
     # print(article)
 
     print('--------------- ARTICLE SEPARATOR ------------------')
@@ -113,9 +111,9 @@ def main():
     # print(html_list)
 
     # GENERATE SOURCES LIST
-    # links_to_headlines = get_urls(unescape_quotes(story_headlines), all_headlines_links)
+    # links_to_headlines = get_urls(chosen_headlines, all_headlines_links)
 
-    # sources = dict(zip(unescape_quotes(story_headlines), links_to_headlines))
+    # sources = dict(zip(chosen_headlines, links_to_headlines))
     # print(sources)
 
     # sources_html = generate_sources_list(sources)
@@ -125,7 +123,7 @@ def main():
     html_content = f'<h3 class=\"title_seps\">At a glance</h3>{html_list}<h3 class=\"title_seps\">The details</h3>{html_article}'
 
     # Get categories
-    category_ids = get_categories(sys.argv[1])
+    category_ids = get_categories(CATEGORY)
 
     # Generate post image and get id
     generate_image(article_headline)
@@ -140,19 +138,19 @@ def main():
     # if 200 <= response_code.status_code <= 299:
     if response_code.ok:
         # Mark chosen headlines as covered
-        mark_covered(unescape_quotes(story_headlines))
+        mark_covered(chosen_headlines)
         print('Successfully pushed post to Wordpress!')
     else:
         raise Exception('Could not push to Wordpress')
     
     social_exclusions = ['teesside']
 
-    if sys.argv[1] not in social_exclusions:
+    if CATEGORY not in social_exclusions:
         # Post on subreddit
         reddit_post(article_headline, article_slug)
 
     # Get Instagram hashtags
-    ig_tags = generate_ig_hashtags(sys.argv[1])
+    ig_tags = generate_ig_hashtags(CATEGORY)
 
     # Get IG caption
     if article_excerpt == None:
@@ -169,97 +167,6 @@ def main():
     ig_post_image(ig_caption, featured_media_url)
 
 
-def get_urls(topic):
-    topic = topic.lower()
-    if topic == 'world':
-        urls = [
-            'https://www.reuters.com/world/'
-            'https://www.telegraph.co.uk/world-news/',
-            'https://apnews.com/hub/world-news',
-            'https://www.washingtonpost.com/world/',
-            'https://news.sky.com/world',
-            'https://www.bbc.co.uk/news/world'
-        ]
-    elif topic == 'science':
-        urls = [
-            'https://www.bbc.co.uk/news/science_and_environment'
-            'https://www.theguardian.com/science',
-            'https://www.independent.co.uk/news/science',
-            'https://www.newscientist.com/section/news/',
-            'https://scitechdaily.com/news/science/'
-        ]
-    elif topic == 'uk':
-        urls = [
-            'https://www.bbc.co.uk/news/uk'
-            'https://www.reuters.com/world/uk/',
-            'https://www.theguardian.com/uk-news',
-            'https://news.sky.com/uk',
-            'https://www.independent.co.uk/news/uk'
-        ]
-    elif topic == 'us':
-        urls = [
-            'https://www.theguardian.com/us-news'
-            'https://www.reuters.com/world/us/',
-            'https://www.bbc.co.uk/news/world/us_and_canada',
-            'https://eu.usatoday.com/news/',
-            'https://www.independent.co.uk/news/world/americas'
-        ]
-    elif topic == 'teesside':
-        urls = [
-            'https://www.gazettelive.co.uk/news/teesside-news/',
-            'https://www.thenorthernecho.co.uk/news/local/teesside/',
-        ]
-    else:
-        raise Exception('Please provide one of the following arguments: world, science, tech, business, uk, us, teesside')
-
-    return urls
-
-
-def get_story(headlines):
-    prompt = (f"Find as many headlines as you can from the below list of news headlines, that are about the exact same story. Output the related headlines in a python list format, where each list item is a list of contextually matched headlines, with no other text above or below. Only include stories that have at least 2 other headlines associated with them. The outputted list cannot have more than 3 items in it, so choose the headlines that you include in the list wisely.\n\n{headlines}")
-
-    try:
-        response = openai.Completion.create(
-            engine="text-davinci-003",
-            prompt=prompt,
-            max_tokens=1000,
-            temperature=0.1,
-            top_p=1,
-            frequency_penalty=0,
-            presence_penalty=0
-        )
-        related_headlines = response["choices"][0]["text"]
-        related_headlines = related_headlines.replace("', '", "^!!").replace("['", "^^!").replace("'], ", "^^^").replace("']]", "^!^").replace("'", "\\'").replace('"', '\\"').replace('‘', '\\‘').replace('’', '\\’').replace(',', '\\,').replace("^!!", "', '").replace("^^!", "['").replace("^^^", "'], ").replace("^!^", "']]")
-        related_headlines = ast.literal_eval(related_headlines)
-    except: 
-        response = openai.Completion.create(
-            engine="text-davinci-003",
-            prompt=prompt,
-            max_tokens=1000,
-            temperature=0,
-            top_p=1,
-            frequency_penalty=0,
-            presence_penalty=0
-        )
-        related_headlines = response["choices"][0]["text"]
-        related_headlines = related_headlines.replace("\\'", "\'")
-        # print(related_headlines)
-        related_headlines = ast.literal_eval(related_headlines)
-
-    for headlines in related_headlines:
-        if check_covered(unescape_quotes(headlines)) == False:
-            chosen_story_headlines = headlines
-            break
-        else:
-            chosen_story_headlines = None
-            continue
-
-    if chosen_story_headlines is not None:
-        return chosen_story_headlines
-    else:
-        raise Exception('All stories covered')
-
-
 def choose_longest(articles):
     longest = 0
     longest_article = ['']
@@ -271,48 +178,65 @@ def choose_longest(articles):
     return longest_article
 
 
-def get_points(articles):
+def get_facts(articles):
     points = []
     for article in articles:
         if len(article) <= 10:
             # print('Passing article')
             continue
+        
+        print('------------ ARTICLE ------------\n')
+        print(article)
 
         prompt = f'Based on the following article, please create as many bullet points as you can about all of the information. Please keep the bullet points as neutral and unbiased as possible, and feel free to change the wording of things (except quotes) to remove any biased tones and language - stick to neutral facts only. Please only output the bulleted list, nothing else. \n\n{article}'
         
         while(True):
-            try:
-                response = openai.Completion.create(
-                    engine="text-davinci-003",
-                    prompt=prompt,
-                    max_tokens=1000,
-                    temperature=0,
-                    top_p=1,
-                    frequency_penalty=0,
-                    presence_penalty=0
-                )
-                points.append(response["choices"][0]["text"])
-                break
-            except:
-                sentences = re.split(r'[.!?]', article, maxsplit=1)
-                article = ' '.join(sentences[:-1])
-                prompt = (f"Based on the following article, please create as many bullet points as you can about all of the information. Please keep the bullet points as neutral and unbiased as possible, and feel free to change the wording of things (except quotes) to remove any biased tones and language - stick to neutral facts only. Please only output the bulleted list, nothing else. \n\n{article}")
+            response = openai.ChatCompletion.create(
+                model="gpt-3.5-turbo",
+                messages=[
+                    {"role": "user", "content": prompt},
+                ],
+                temperature=0,
+                top_p=1,
+                frequency_penalty=0,
+                presence_penalty=0
+            )
+
+            points.append(response['choices'][0]['message']['content'])
+            print(response['choices'][0]['message']['content'])
+            break
     return points
 
 
-def generate_article(points):
-    prompt = (f"Based on the below points, please generate me a whole news article for use on a news company's website. The article must be completely unbiased and wrote from a neutral point of view. Please make the article as long and detailed as possible, with as much information as you can fit. Please write in the inverted pyramid format, and lay the content out so that each sentence is its own paragraph. Please also try to ensure no more than 25% of sentences contain more than 20 words:\n\n{points}")
-    
-    response = openai.Completion.create(
-        engine="text-davinci-003",
-        prompt=prompt,
-        max_tokens=2042,
+def generate_brief(bullet_points):
+    response = openai.ChatCompletion.create(
+        model="gpt-3.5-turbo",
+        messages=[
+            {"role": "user", "content": 'I have this python list of bullet points, where each list item is a different collection of bullet pointed facts about a news story that have been generated by GPT3 from multiple different scraped news articles on the story. Your job is to filter and combine these facts, and generate a very detailed and informative brief for a news reporter based on all of the available facts and information about the news story. Leave out no information. Your only output should be the brief so it can be stored as a string in python.\n\n' + str(bullet_points)},
+        ],
+        temperature=0.7,
+        top_p=1,
+        frequency_penalty=0,
+        presence_penalty=0
+    )
+    return response['choices'][0]['message']['content']
+
+
+def generate_article(brief):
+    prompt = (f"Based on the below brief, please generate me a whole news article for use on a news company's website. The article must be completely unbiased and wrote from a neutral point of view. Please make the article as long and detailed as possible, with as much information as you can fit. Please write in the inverted pyramid format, and lay the content out so that each sentence is its own paragraph. Please also try to ensure no more than 25% of sentences contain more than 20 words:\n\n{brief}")
+
+    response = openai.ChatCompletion.create(
+        model="gpt-3.5-turbo",
+        messages=[
+            {"role": "user", "content": prompt},
+        ],
         temperature=0,
         top_p=1,
         frequency_penalty=0,
         presence_penalty=0
     )
-    article = response["choices"][0]["text"]
+
+    article = response['choices'][0]['message']['content']
     return article
 
 
@@ -562,7 +486,7 @@ def format_article(article):
 def create_covered_csv():
     file_path = 'covered.csv'
     if not os.path.exists(file_path):
-        with open('covered.csv', 'w', newline='') as file:
+        with open(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'covered.csv'), 'w', newline='') as file:
             fieldnames = ['headline', 'time']
             writer = csv.DictWriter(file, fieldnames=fieldnames)
             writer.writeheader()
@@ -585,8 +509,7 @@ def mark_covered(headlines):
     with open(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'covered.csv'), 'a') as file:
         writer = csv.writer(file)
         for headline in headlines:
-            now = datetime.datetime.now().strftime('%H:%M:%S')
-            writer.writerow([headline, now])
+            writer.writerow([headline])
         file.close()
 
 

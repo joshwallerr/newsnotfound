@@ -3,6 +3,7 @@ import csv
 import os
 from itertools import zip_longest
 from sentence_transformers import SentenceTransformer, util
+import json
 
 # Load scraped headlines into headlines.csv
 # Load scraped headlines into headlines.csv
@@ -64,8 +65,12 @@ for category, url_list in all_urls.items():
     all_headlines[category] = scraped_headlines.keys()
     all_links[category] = scraped_headlines.values()
 
+# Dump all_headlines_links into data/headlines_links.json
+with open(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'data', 'headlines_links.json'), 'w') as jsonfile:
+    json.dump(all_headlines_links, jsonfile, indent=4)
+
 # Open a new file for writing
-with open('data/headlines.csv', 'w', newline='') as csvfile:
+with open(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'data', 'headlines.csv'), 'w', newline='') as csvfile:
     writer = csv.writer(csvfile)
 
     # Write the header row with the keys from the dictionary
@@ -94,7 +99,7 @@ def process_headlines(headlines):
             related_headlines.append(related)
     return related_headlines
 
-with open('data/headlines.csv', 'r') as csvfile:
+with open(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'data', 'headlines.csv'), 'r') as csvfile:
     reader = csv.DictReader(csvfile)
     headers = reader.fieldnames
     headlines = {header: [] for header in headers}
@@ -105,7 +110,7 @@ with open('data/headlines.csv', 'r') as csvfile:
 
 related_headlines = {header: process_headlines(headlines[header]) for header in headers}
 
-with open('data/related_headlines.csv', 'w', newline='') as csvfile:
+with open(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'data', 'headlines.csv'), 'w', newline='') as csvfile:
     writer = csv.DictWriter(csvfile, fieldnames=headers)
     writer.writeheader()
     max_length = max([len(related_headlines[header]) for header in headers])
