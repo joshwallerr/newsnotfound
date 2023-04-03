@@ -110,7 +110,7 @@ with open(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'data', 'head
 
 related_headlines = {header: process_headlines(headlines[header]) for header in headers}
 
-with open(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'data', 'headlines.csv'), 'w', newline='') as csvfile:
+with open(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'data', 'related_headlines.csv'), 'w', newline='') as csvfile:
     writer = csv.DictWriter(csvfile, fieldnames=headers)
     writer.writeheader()
     max_length = max([len(related_headlines[header]) for header in headers])
