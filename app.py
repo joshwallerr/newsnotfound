@@ -108,7 +108,8 @@ def main():
 
     # Generate html list
     html_list = generate_html_list(html_article)
-    # print(html_list)
+    print('--------------- HTML LIST SEPARATOR ------------------')
+    print(html_list)
 
     # GENERATE SOURCES LIST
     links_to_headlines = get_urls(chosen_headlines, all_headlines_links)
@@ -142,7 +143,7 @@ def main():
         print('Successfully pushed post to Wordpress!')
     else:
         raise Exception('Could not push to Wordpress')
-    
+
     social_exclusions = ['teesside']
 
     if CATEGORY not in social_exclusions:
@@ -247,16 +248,17 @@ def bias_checker(article):
     new_paras = []
     for para in para_list:
         prompt = (f"You must take on the role of an article reviewer and editor for an unbiased news company. Your job is to look at the below paragraph and ensure that it is 100% neutral and unbiased. If you find any instances of biased words/phrases, or positive/negative language, you must rewrite or reword them in a completely unbiased and neutral way. Aim to be factual, not opinionated.\n\n{para}")
-        response = openai.Completion.create(
-            engine="text-davinci-003",
-            prompt=prompt,
-            max_tokens=500,
+        response = openai.ChatCompletion.create(
+            model="gpt-3.5-turbo",
+            messages=[
+                {"role": "user", "content": prompt},
+            ],
             temperature=0,
             top_p=1,
             frequency_penalty=0,
-            presence_penalty=0,
+            presence_penalty=0
         )
-        new_paras.append(response["choices"][0]["text"])
+        new_paras.append(response['choices'][0]['message']['content'])
     print(new_paras)
     article = " ".join(new_paras)
     bias_rating = calculate_bias(article)
@@ -266,29 +268,31 @@ def bias_checker(article):
 
 def generate_headline(article):
     prompt = (f"You must take on the role of an article reviewer and editor for an unbiased news company. Your job is to look at the below article and generate a 100% neutral and unbiased headline. The headline should be effective at informing readers of what the article is about, whilst remaining completely neutral and unbiased. Aim to be factual, not opinionated. The headlines must not contain more than 65 characters. Just output the headline.\n\n{article}")
-    response = openai.Completion.create(
-        engine="text-davinci-003",
-        prompt=prompt,
-        max_tokens=1000,
+    response = openai.ChatCompletion.create(
+        model="gpt-3.5-turbo",
+        messages=[
+            {"role": "user", "content": prompt},
+        ],
         temperature=0.1,
         top_p=1,
         frequency_penalty=0,
         presence_penalty=0
     )
-    article_headline = response["choices"][0]["text"]
+    article_headline = response['choices'][0]['message']['content']
 
     if len(article_headline) > 120:
         prompt = (f"You must take on the role of an article reviewer and editor for an unbiased news company. Your job is to look at the below article and generate a 100% neutral and unbiased headline. The headline should be effective at informing readers of what the article is about, whilst remaining completely neutral and unbiased. Aim to be factual, not opinionated. The headlines must not contain more than 65 characters. Just output the headline.\n\n{article}")
-        response = openai.Completion.create(
-            engine="text-davinci-003",
-            prompt=prompt,
-            max_tokens=1000,
+        response = openai.ChatCompletion.create(
+            model="gpt-3.5-turbo",
+            messages=[
+                {"role": "user", "content": prompt},
+            ],
             temperature=0.5,
             top_p=1,
             frequency_penalty=0,
             presence_penalty=0
         )
-        article_headline = response["choices"][0]["text"]
+        article_headline = response['choices'][0]['message']['content']
 
     if article_headline == '':
         raise Exception('Failed to generate headline.')
@@ -302,16 +306,17 @@ def generate_headline(article):
 
 def generate_excerpt(article):
     prompt = (f"Please generate me a short, unbiased excerpt for the below news article. The excerpt should be relatively short, and no more than one sentence long. Please just output the excerpt: {article}")
-    response = openai.Completion.create(
-        engine="text-davinci-003",
-        prompt=prompt,
-        max_tokens=1000,
+    response = openai.ChatCompletion.create(
+        model="gpt-3.5-turbo",
+        messages=[
+            {"role": "user", "content": prompt},
+        ],
         temperature=0.1,
         top_p=1,
         frequency_penalty=0,
         presence_penalty=0
     )
-    article_excerpt = response["choices"][0]["text"]
+    article_excerpt = response['choices'][0]['message']['content']
 
     if article_excerpt == '':
         return None
@@ -328,48 +333,51 @@ def generate_slug(headline):
 
 def html_converter(article):
     prompt = (f"Please convert this entire news article to html, where each line is a p tag. Also, format the article with a maximum of three h4 subheadings where possible: {article}")
-    response = openai.Completion.create(
-        engine="text-davinci-003",
-        prompt=prompt,
-        max_tokens=2042,
+    response = openai.ChatCompletion.create(
+        model="gpt-3.5-turbo",
+        messages=[
+            {"role": "user", "content": prompt},
+        ],
         temperature=0,
         top_p=1,
         frequency_penalty=0,
         presence_penalty=0
     )
-    html_article = response["choices"][0]["text"]
+    html_article = response['choices'][0]['message']['content']
     # print(html_article)
     return html_article
 
 
 def generate_html_list(html_article):
-    prompt = (f"Please generate a html formatted, unordered list of short bullet points about the key information in the following article. Try to only include a maximum of 5 bullet points: {html_article}")
-    response = openai.Completion.create(
-        engine="text-davinci-003",
-        prompt=prompt,
-        max_tokens=2042,
+    prompt = (f"Please generate a html formatted, unordered list (<ul>) of short bullet points about the key information in the following article. Try to only include a maximum of 5 bullet points: {html_article}")
+    response = openai.ChatCompletion.create(
+        model="gpt-3.5-turbo",
+        messages=[
+            {"role": "user", "content": prompt},
+        ],
         temperature=0,
         top_p=1,
         frequency_penalty=0,
         presence_penalty=0
     )
-    html_list = response["choices"][0]["text"]
+    html_list = response['choices'][0]['message']['content']
     # print(html_list)
     return html_list
 
 
 def generate_sources_list(sources):
     prompt = (f"Please generate a html formatted, unordered list of sources for the following python dictionary of sources. Each source should be its own list item, and should link to the sources url in a new tab (using target='_blank'). Sources {sources}")
-    response = openai.Completion.create(
-        engine="text-davinci-003",
-        prompt=prompt,
-        max_tokens=2042,
+    response = openai.ChatCompletion.create(
+        model="gpt-3.5-turbo",
+        messages=[
+            {"role": "user", "content": prompt},
+        ],
         temperature=0,
         top_p=1,
         frequency_penalty=0,
         presence_penalty=0
     )
-    sources_list = response["choices"][0]["text"]
+    sources_list = response['choices'][0]['message']['content']
     print(sources_list)
     return sources_list
 
