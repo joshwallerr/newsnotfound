@@ -38,7 +38,7 @@ us_urls = [
     'https://www.theguardian.com/us-news'
     'https://www.reuters.com/world/us/',
     'https://www.bbc.co.uk/news/world/us_and_canada',
-    'https://eu.usatoday.com/news/',
+    'https://eu.usatoday.com/',
     'https://www.independent.co.uk/news/world/americas'
 ]
 

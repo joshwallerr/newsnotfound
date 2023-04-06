@@ -224,7 +224,7 @@ def generate_brief(bullet_points):
 
 
 def generate_article(brief):
-    prompt = (f"Based on the below brief, please generate me a whole news article for use on a news company's website. The article must be completely unbiased and wrote from a neutral point of view. Please make the article as long and detailed as possible, with as much information as you can fit. Please write in the inverted pyramid format, and lay the content out so that each sentence is its own paragraph. Please also try to ensure no more than 25% of sentences contain more than 20 words:\n\n{brief}")
+    prompt = (f"Based on the below brief, please generate me a whole news article for use on a news company's website. The article must be completely unbiased and wrote from a neutral point of view. Please make the article as long and detailed as possible, with as much information as you can fit. Do not write any conclusion. Do not make any assumptions or add any suggestive language. Strictly stick to the facts given to you in the brief. Please write in the inverted pyramid format, and lay the content out so that each sentence is its own paragraph. Please also try to ensure no more than 25% of sentences contain more than 20 words:\n\n{brief}")
 
     response = openai.ChatCompletion.create(
         model="gpt-3.5-turbo",
@@ -267,7 +267,7 @@ def bias_checker(article):
     return article
 
 def generate_headline(article):
-    prompt = (f"You must take on the role of an article reviewer and editor for an unbiased news company. Your job is to look at the below article and generate a 100% neutral and unbiased headline. The headline should be effective at informing readers of what the article is about, whilst remaining completely neutral and unbiased. Aim to be factual, not opinionated. The headlines must not contain more than 65 characters. Just output the headline.\n\n{article}")
+    prompt = (f"You must take on the role of an article reviewer and editor for an unbiased news company. Your job is to look at the below article and generate a 100% neutral and unbiased headline. The headline should use completely neutral and unbiased language. Aim to be factual, not opinionated. Keep the headline as short as possible (ideally no more than 10 words). The headline does not need to be overly descriptive, it just needs to inform the reader quickly on what the subject of the article is. Just output the headline.\n\n{article}")
     response = openai.ChatCompletion.create(
         model="gpt-3.5-turbo",
         messages=[
@@ -281,7 +281,7 @@ def generate_headline(article):
     article_headline = response['choices'][0]['message']['content']
 
     if len(article_headline) > 120:
-        prompt = (f"You must take on the role of an article reviewer and editor for an unbiased news company. Your job is to look at the below article and generate a 100% neutral and unbiased headline. The headline should be effective at informing readers of what the article is about, whilst remaining completely neutral and unbiased. Aim to be factual, not opinionated. The headlines must not contain more than 65 characters. Just output the headline.\n\n{article}")
+        prompt = (f"You must take on the role of an article reviewer and editor for an unbiased news company. Your job is to look at the below article and generate a 100% neutral and unbiased headline. The headline should use completely neutral and unbiased language. Aim to be factual, not opinionated. Keep the headline as short as possible (ideally no more than 10 words). The headline does not need to be overly descriptive, it just needs to inform the reader quickly on what the subject of the article is. Just output the headline.\n\n{article}")
         response = openai.ChatCompletion.create(
             model="gpt-3.5-turbo",
             messages=[

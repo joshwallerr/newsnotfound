@@ -51,6 +51,10 @@ def find_most_suitable_headlines(category):
         random_headline = random.choice([x for x in all_headlines if x not in covered_headlines])
         chosen_headlines = [random_headline]
 
+    for headline in chosen_headlines:
+        if 'live briefing' in headline.lower():
+            chosen_headlines.remove(headline)
+
     return chosen_headlines
 
 # Example usage

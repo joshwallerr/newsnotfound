@@ -10,3 +10,5 @@ images/image.png
 logs.txt
 client_secrets.json
 refreshtoken.py
+lambda_package_load
+CreateNNFPost.zip

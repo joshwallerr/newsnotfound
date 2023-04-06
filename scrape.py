@@ -136,7 +136,6 @@ def headlines_links(urls):
                 headline_link = 'https://www.thenorthernecho.co.uk' + article['href']
                 all_headlines_links[headline_text] = headline_link
 
-
     return all_headlines_links
 
 
@@ -182,8 +181,7 @@ def scrape_articles(headlines, headlines_links):
                     temp_article += "\n\n" + text
 
             if 'bbc.co.uk' in url:
-                main_div = soup.find("div", class_="ssrcss-rgov1k-MainColumn e1sbfw0p0")
-                text_block_divs = main_div.find_all("div", {"data-component": "text-block"})
+                text_block_divs = soup.find_all("div", {"data-component": "text-block"})
                 for div in text_block_divs:
                     p = div.find("p")
                     text = p.get_text()
@@ -280,6 +278,13 @@ def scrape_articles(headlines, headlines_links):
             articles.append(temp_article)
         except:
             pass
+
+    for article in articles:
+        if article == '':
+            articles.remove(article)
+
+    if articles == []:
+        raise Exception('No articles found. Could not locate article text in dictionary of links.')
 
     return articles
 
