@@ -1,0 +1,9 @@
+openai
+nltk
+textblob
+requests
+Pillow
+stability_sdk
+bs4
+sentence_transformers
+praw
