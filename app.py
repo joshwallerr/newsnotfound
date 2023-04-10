@@ -67,6 +67,7 @@ def main():
 
     # Create article brief
     brief = generate_brief(facts)
+    print('------------ BRIEF ------------\n')
     print(brief)
 
     # Generate article
@@ -227,7 +228,7 @@ def generate_article(brief):
     prompt = (f"Based on the below brief, please generate me a whole news article for use on a news company's website. The article must be completely unbiased and wrote from a neutral point of view. Please make the article as long and detailed as possible, with as much information as you can fit. Do not write any conclusion. Do not make any assumptions or add any suggestive language. Strictly stick to the facts given to you in the brief. Please write in the inverted pyramid format, and lay the content out so that each sentence is its own paragraph. Please also try to ensure no more than 25% of sentences contain more than 20 words:\n\n{brief}")
 
     response = openai.ChatCompletion.create(
-        model="gpt-3.5-turbo",
+        model="gpt-4",
         messages=[
             {"role": "user", "content": prompt},
         ],
@@ -259,7 +260,6 @@ def bias_checker(article):
             presence_penalty=0
         )
         new_paras.append(response['choices'][0]['message']['content'])
-    print(new_paras)
     article = " ".join(new_paras)
     bias_rating = calculate_bias(article)
     print(bias_rating)

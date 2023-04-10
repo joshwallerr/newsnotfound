@@ -197,7 +197,7 @@ def scrape_articles(headlines, headlines_links):
 
             if 'theguardian.com' in url:
                 article_div = soup.find("div", class_='article-body-commercial-selector')
-                for p in article_div.find_all('p', class_='dcr-h26idz'):
+                for p in article_div.find_all('p'):
                     text = p.get_text()
                     temp_article += "\n\n" + text
 
@@ -284,6 +284,8 @@ def scrape_articles(headlines, headlines_links):
             articles.remove(article)
 
     if articles == []:
+        from app import mark_covered
+        mark_covered(headlines)
         raise Exception('No articles found. Could not locate article text in dictionary of links.')
 
     return articles
