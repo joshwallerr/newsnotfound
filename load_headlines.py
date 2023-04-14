@@ -47,12 +47,21 @@ teesside_urls = [
     'https://www.thenorthernecho.co.uk/news/local/teesside/',
 ]
 
+tyneside_urls = [
+    'https://www.chroniclelive.co.uk/all-about/newcastle-upon-tyne',
+    'https://www.chroniclelive.co.uk/all-about/gateshead',
+    'https://www.shieldsgazette.com/news/latest',
+    'https://www.northumberlandgazette.co.uk/news',
+    'https://www.thenorthernecho.co.uk/news/local/northdurham/tyneandwear/',
+]
+
 all_urls = {
     'world': world_urls,
     'science': science_urls,
     'uk': uk_urls,
     'us': us_urls,
-    'teesside': teesside_urls
+    'teesside': teesside_urls,
+    'tyneside': tyneside_urls,
 }
 
 all_headlines_links = {}

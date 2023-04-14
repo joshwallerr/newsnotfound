@@ -39,8 +39,6 @@ wordpress_header = {'Authorization': 'Basic ' + wordpress_token.decode('utf-8')}
 
 
 def main():
-    create_covered_csv()
-
     CATEGORY = sys.argv[1]
 
     with open(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'data', 'headlines_links.json')) as f:
@@ -145,9 +143,13 @@ def main():
     else:
         raise Exception('Could not push to Wordpress')
 
-    social_exclusions = ['teesside']
+    social_exclusions = ['tyneside']
+    reddit_exclusions = ['teesside', 'tyneside']
 
-    if CATEGORY not in social_exclusions:
+    if CATEGORY in social_exclusions:
+        return
+
+    if CATEGORY not in reddit_exclusions:
         # Post on subreddit
         reddit_post(article_headline, article_slug)
 
@@ -394,6 +396,8 @@ def get_categories(topic):
         categories = [6]
     elif topic =='teesside':
         categories = [83]
+    elif topic == 'tyneside':
+        categories = [85]
     else:
         raise Exception('Please provide one of the following arguments: world, science, tech, business, uk, us')
 
@@ -406,7 +410,7 @@ def generate_image(headline):
         verbose=True,
     )
 
-    sd_prompt = f"an oil painting (with no frame) that best visualises the following news headline: {headline}"
+    sd_prompt = f"an image in the style of an oil painting that best visualises the following news headline: {headline}"
 
     answers = stability_api.generate(
         prompt=sd_prompt

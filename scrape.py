@@ -129,11 +129,35 @@ def headlines_links(urls):
             for article in soup.find_all('a', class_='mar-lead-story__link'):
                 headline_text = article.find('span').text
                 headline_link = 'https://www.thenorthernecho.co.uk' + article['href']
+                if 'lott' in headline_text.lower() or 'forecast' in headline_text.lower():
+                    continue
                 all_headlines_links[headline_text] = headline_link
 
             for article in soup.find_all('a', class_='text-slate no-underline'):
                 headline_text = article.text
                 headline_link = 'https://www.thenorthernecho.co.uk' + article['href']
+                if 'lott' in headline_text.lower() or 'forecast' in headline_text.lower():
+                    continue
+                all_headlines_links[headline_text] = headline_link
+
+        if 'chroniclelive.co.uk' in url:
+            for article in soup.find_all('a', class_='headline'):
+                headline_text = article.text
+                headline_link = article['href']
+                if 'lott' in headline_text.lower() or 'forecast' in headline_text.lower():
+                    continue
+                all_headlines_links[headline_text] = headline_link
+
+        if 'shieldsgazette.com' in url:
+            for article in soup.find_all('a', class_='article-title'):
+                headline_text = article.text
+                headline_link = 'https://www.shieldsgazette.com' + article['href']
+                all_headlines_links[headline_text] = headline_link
+
+        if 'northumberlandgazette.co.uk' in url:
+            for article in soup.find_all('a', class_='article-title'):
+                headline_text = article.text
+                headline_link = 'https://www.northumberlandgazette.co.uk' + article['href']
                 all_headlines_links[headline_text] = headline_link
 
     return all_headlines_links
@@ -273,6 +297,28 @@ def scrape_articles(headlines, headlines_links):
                     text = p.get_text()
                     if "Read next" in text or 'Read more' in text or 'To get more stories direct' in text or 'Get more from The Northern Echo' in text:
                         continue
+                    temp_article += '\n\n' + text
+
+            if 'chroniclelive.co.uk' in url:
+                article_div = soup.find('div', class_='article-body')
+                for p in article_div.find_all('p'):
+                    text = p.get_text()
+                    if "Read more" in text:
+                        continue
+                    temp_article += '\n\n' + text
+            
+            if 'shieldsgazette.com' in url:
+                article_div = soup.find('div', class_='article-content')
+                for p in article_div.find_all('p'):
+                    text = p.get_text()
+                    if "Read South" in text:
+                        continue
+                    temp_article += '\n\n' + text
+
+            if 'northumberlandgazette.co.uk' in url:
+                article_div = soup.find('div', class_='article-content')
+                for p in article_div.find_all('p'):
+                    text = p.get_text()
                     temp_article += '\n\n' + text
 
             articles.append(temp_article)
