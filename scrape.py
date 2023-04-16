@@ -129,14 +129,14 @@ def headlines_links(urls):
             for article in soup.find_all('a', class_='mar-lead-story__link'):
                 headline_text = article.find('span').text
                 headline_link = 'https://www.thenorthernecho.co.uk' + article['href']
-                if 'lott' in headline_text.lower() or 'forecast' in headline_text.lower():
+                if 'lott' in headline_text.lower() or 'forecast' in headline_text.lower() or 'live:' in headline_text.lower() or '-live-' in headline_link:
                     continue
                 all_headlines_links[headline_text] = headline_link
 
             for article in soup.find_all('a', class_='text-slate no-underline'):
                 headline_text = article.text
                 headline_link = 'https://www.thenorthernecho.co.uk' + article['href']
-                if 'lott' in headline_text.lower() or 'forecast' in headline_text.lower():
+                if 'lott' in headline_text.lower() or 'forecast' in headline_text.lower() or 'live:' in headline_text.lower() or '-live-' in headline_link:
                     continue
                 all_headlines_links[headline_text] = headline_link
 
@@ -144,7 +144,7 @@ def headlines_links(urls):
             for article in soup.find_all('a', class_='headline'):
                 headline_text = article.text
                 headline_link = article['href']
-                if 'lott' in headline_text.lower() or 'forecast' in headline_text.lower():
+                if 'lott' in headline_text.lower() or 'forecast' in headline_text.lower() or '-live-' in headline_link or 'live:' in headline_text.lower() or 'recap:' in headline_text.lower():
                     continue
                 all_headlines_links[headline_text] = headline_link
 
@@ -159,6 +159,35 @@ def headlines_links(urls):
                 headline_text = article.text
                 headline_link = 'https://www.northumberlandgazette.co.uk' + article['href']
                 all_headlines_links[headline_text] = headline_link
+
+        if 'sunderlandecho.com' in url:
+            for article in soup.find_all('a', class_='article-title'):
+                headline_text = article.text
+                headline_link = 'https://www.sunderlandecho.com' + article['href']
+                all_headlines_links[headline_text] = headline_link
+
+        if 'worcesternews.co.uk' in url:
+            # Get hero item
+            for article in soup.find_all('a', class_='mar-lead-story__link'):
+                headline_text = article.find('span').text
+                headline_link = 'https://www.worcesternews.co.uk' + article['href']
+                if 'lott' in headline_text.lower() or 'forecast' in headline_text.lower() or 'live:' in headline_text.lower() or '-live-' in headline_link:
+                    continue
+                all_headlines_links[headline_text] = headline_link
+
+            for article in soup.find_all('a', class_='text-slate no-underline'):
+                headline_text = article.text
+                headline_link = 'https://www.worcesternews.co.uk' + article['href']
+                if 'lott' in headline_text.lower() or 'forecast' in headline_text.lower() or 'live:' in headline_text.lower() or '-live-' in headline_link:
+                    continue
+                all_headlines_links[headline_text] = headline_link
+
+        if 'worcesterobserver.co.uk' in url:
+            for article in soup.find_all('a', class_='box_link'):
+                headline_text = article.find(class_='box_title').text
+                headline_link = article['href']
+                all_headlines_links[headline_text] = headline_link
+
 
     return all_headlines_links
 
@@ -317,6 +346,24 @@ def scrape_articles(headlines, headlines_links):
 
             if 'northumberlandgazette.co.uk' in url:
                 article_div = soup.find('div', class_='article-content')
+                for p in article_div.find_all('p'):
+                    text = p.get_text()
+                    temp_article += '\n\n' + text
+
+            if 'sunderlandecho.com' in url:
+                article_div = soup.find('div', class_='article-content')
+                for p in article_div.find_all('p'):
+                    text = p.get_text()
+                    temp_article += '\n\n' + text
+
+            if 'worcesternews.co.uk' in url:
+                article_div = soup.find('div', class_='article-body')
+                for p in article_div.find_all('p'):
+                    text = p.get_text()
+                    temp_article += '\n\n' + text
+                
+            if 'worcesterobserver.co.uk' in url:
+                article_div = soup.find('div', class_='np-article')
                 for p in article_div.find_all('p'):
                     text = p.get_text()
                     temp_article += '\n\n' + text

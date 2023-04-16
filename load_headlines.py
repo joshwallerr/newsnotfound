@@ -10,36 +10,36 @@ import json
 # Load scraped headlines into headlines.csv
 
 world_urls = [
-    'https://www.reuters.com/world/'
+    'https://www.reuters.com/world/',
     'https://www.telegraph.co.uk/world-news/',
     'https://apnews.com/hub/world-news',
     'https://www.washingtonpost.com/world/',
     'https://news.sky.com/world',
-    'https://www.bbc.co.uk/news/world'
+    'https://www.bbc.co.uk/news/world',
 ]
 
 science_urls = [
-    'https://www.bbc.co.uk/news/science_and_environment'
+    'https://www.bbc.co.uk/news/science_and_environment',
     'https://www.theguardian.com/science',
     'https://www.independent.co.uk/news/science',
     'https://www.newscientist.com/section/news/',
-    'https://scitechdaily.com/news/science/'
+    'https://scitechdaily.com/news/science/',
 ]
 
 uk_urls = [
-    'https://www.bbc.co.uk/news/uk'
+    'https://www.bbc.co.uk/news/uk',
     'https://www.reuters.com/world/uk/',
     'https://www.theguardian.com/uk-news',
     'https://news.sky.com/uk',
-    'https://www.independent.co.uk/news/uk'
+    'https://www.independent.co.uk/news/uk',
 ]
 
 us_urls = [
-    'https://www.theguardian.com/us-news'
+    'https://www.theguardian.com/us-news',
     'https://www.reuters.com/world/us/',
     'https://www.bbc.co.uk/news/world/us_and_canada',
     'https://usatoday.com/news/nation/',
-    'https://www.independent.co.uk/news/world/americas'
+    'https://www.independent.co.uk/news/world/americas',
 ]
 
 teesside_urls = [
@@ -50,9 +50,21 @@ teesside_urls = [
 tyneside_urls = [
     'https://www.chroniclelive.co.uk/all-about/newcastle-upon-tyne',
     'https://www.chroniclelive.co.uk/all-about/gateshead',
-    'https://www.shieldsgazette.com/news/latest',
-    'https://www.northumberlandgazette.co.uk/news',
+    # 'https://www.shieldsgazette.com/news/latest',
+    # 'https://www.northumberlandgazette.co.uk/news',
     'https://www.thenorthernecho.co.uk/news/local/northdurham/tyneandwear/',
+]
+
+sunderland_urls = [
+    'https://www.chroniclelive.co.uk/all-about/sunderland',
+    'https://www.thenorthernecho.co.uk/local-news/sunderland-news/',
+    # 'https://www.sunderlandecho.com/news',
+]
+
+worcester_urls = [
+    'https://www.worcesternews.co.uk/news/worcester/',
+    'https://worcesterobserver.co.uk/news/',
+    'https://www.bbc.co.uk/news/england/hereford_and_worcester',
 ]
 
 all_urls = {
@@ -62,6 +74,8 @@ all_urls = {
     'us': us_urls,
     'teesside': teesside_urls,
     'tyneside': tyneside_urls,
+    'sunderland': sunderland_urls,
+    'worcester': worcester_urls,
 }
 
 all_headlines_links = {}
