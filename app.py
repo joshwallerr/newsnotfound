@@ -418,7 +418,7 @@ def generate_image(headline):
         verbose=True,
     )
 
-    sd_prompt = f"an image in the style of an oil painting that best visualises the following news headline: {headline}"
+    sd_prompt = f"a modern, highly detailed image in the style of an oil painting that best visualises the following news headline: {headline}"
 
     answers = stability_api.generate(
         prompt=sd_prompt
