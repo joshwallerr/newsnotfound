@@ -222,7 +222,11 @@ def headlines_links(urls):
                 headline_link = article['href']
                 all_headlines_links[headline_text] = headline_link
 
-
+        if 'plymouthherald.co.uk' in url:
+            for article in soup.find_all('a', class_="headline"):
+                headline_text = article.text
+                headline_link = article['href']
+                all_headlines_links[headline_text] = headline_link
 
     return all_headlines_links
 
@@ -424,6 +428,14 @@ def scrape_articles(headlines, headlines_links):
                     temp_article += '\n\n' + text
 
             if 'examinerlive.co.uk' in url:
+                article_div = soup.find('div', class_='article-body')
+                for p in article_div.find_all('p', recursive=False):
+                    text = p.get_text()
+                    if "read more" in text.lower() or "read next" in text.lower():
+                        continue
+                    temp_article += "\n\n" + text
+
+            if 'plymouthherald.co.uk' in url:
                 article_div = soup.find('div', class_='article-body')
                 for p in article_div.find_all('p', recursive=False):
                     text = p.get_text()
