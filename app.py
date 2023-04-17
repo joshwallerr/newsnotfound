@@ -143,8 +143,8 @@ def main():
     else:
         raise Exception('Could not push to Wordpress')
 
-    social_exclusions = ['tyneside', 'sunderland', 'worcester', 'bedford']
-    reddit_exclusions = ['teesside', 'tyneside', 'sunderland', 'worcester', 'bedford']
+    social_exclusions = ['tyneside', 'sunderland', 'worcester', 'bedford', 'norwich']
+    reddit_exclusions = ['teesside', 'tyneside', 'sunderland', 'worcester', 'bedford', 'norwich']
 
     if CATEGORY in social_exclusions:
         return
@@ -395,15 +395,17 @@ def get_categories(topic):
     elif topic == 'us':
         categories = [6]
     elif topic =='teesside':
-        categories = [83]
+        categories = [42, 83]
     elif topic == 'tyneside':
-        categories = [85]
+        categories = [42, 85]
     elif topic == 'sunderland':
-        categories = [86]
+        categories = [42, 86]
     elif topic == 'worcester':
-        categories = [87]
+        categories = [42, 87]
     elif topic == 'bedford':
-        categories = [88]
+        categories = [42, 88]
+    elif topic == 'norwich':
+        categories = [42, 89]
     else:
         raise Exception('Please provide one of the following arguments: world, science, tech, business, uk, us')
 
