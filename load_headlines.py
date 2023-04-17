@@ -77,6 +77,11 @@ norwich_urls = [
     'https://www.bbc.co.uk/news/england/norfolk',
 ]
 
+west_yorkshire_urls = [
+    'https://www.examinerlive.co.uk/news/west-yorkshire-news/',
+    'https://www.bbc.co.uk/news/england/leeds_and_west_yorkshire',
+]
+
 all_urls = {
     'world': world_urls,
     'science': science_urls,
@@ -88,6 +93,7 @@ all_urls = {
     'worcester': worcester_urls,
     'bedford': bedford_urls,
     'norwich': norwich_urls,
+    'west_yorkshire': west_yorkshire_urls,
 }
 
 all_headlines_links = {}
