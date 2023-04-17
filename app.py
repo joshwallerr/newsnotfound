@@ -250,7 +250,7 @@ def bias_checker(article):
 
     new_paras = []
     for para in para_list:
-        prompt = (f"You must take on the role of an article reviewer and editor for an unbiased news company. Your job is to look at the below paragraph and ensure that it is 100% neutral and unbiased. If you find any instances of biased words/phrases, or positive/negative language, you must rewrite or reword them in a completely unbiased and neutral way. Aim to be factual, not opinionated.\n\n{para}")
+        prompt = (f"You must take on the role of an article reviewer and editor for an unbiased news company. Your job is to look at the below paragraph and ensure that it is 100% neutral and unbiased. If you find any instances of biased words/phrases, or positive/negative language, you must rewrite or reword them in a completely unbiased and neutral way. Aim to be factual, not opinionated. If a paragraphis already neutral and unbiased, just output the original paragraph.\n\n{para}")
         response = openai.ChatCompletion.create(
             model="gpt-3.5-turbo",
             messages=[
