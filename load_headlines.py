@@ -67,6 +67,11 @@ worcester_urls = [
     'https://www.bbc.co.uk/news/england/hereford_and_worcester',
 ]
 
+bedford_urls = [
+    'https://www.bedfordindependent.co.uk/category/news/',
+    'https://www.bedfordshirelive.co.uk/news/bedfordshire-news/',
+]
+
 all_urls = {
     'world': world_urls,
     'science': science_urls,
@@ -76,6 +81,7 @@ all_urls = {
     'tyneside': tyneside_urls,
     'sunderland': sunderland_urls,
     'worcester': worcester_urls,
+    'bedford': bedford_urls,
 }
 
 all_headlines_links = {}
