@@ -299,6 +299,12 @@ def generate_headline(article):
     if article_headline == '':
         raise Exception('Failed to generate headline.')
 
+    if 'Neutral and unbiased: ' in article_headline:
+        article_headline = article_headline.replace("Neutral and unbiased: ", "")
+
+    if 'Neutral and unbiased version: ' in article_headline:
+        article_headline = article_headline.replace("Neutral and unbiased version: ", "")
+
     if 'Headline: ' in article_headline:
         article_headline = article_headline.replace("Headline: ", "")
 
