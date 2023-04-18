@@ -302,6 +302,9 @@ def generate_headline(article):
     if 'Neutral and unbiased: ' in article_headline:
         article_headline = article_headline.replace("Neutral and unbiased: ", "")
 
+    if 'Neutral and unbiased headline: ' in article_headline:
+        article_headline = article_headline.replace("Neutral and unbiased headline: ", "")
+
     if 'Neutral and unbiased version: ' in article_headline:
         article_headline = article_headline.replace("Neutral and unbiased version: ", "")
 
