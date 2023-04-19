@@ -75,8 +75,9 @@ def main():
     print('--------------- ARTICLE SEPARATOR ------------------')
 
     # Check for, and remove bias
-    article = bias_checker(article)
-    print(article)
+    # TEMPORARILY DISABLED
+    # article = bias_checker(article)
+    # print(article)
 
     # AI Bias reviewer and editor?
 
