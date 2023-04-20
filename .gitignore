@@ -12,6 +12,10 @@ client_secrets.json
 refreshtoken.py
 lambda_package_load
 CreateNNFPost.zip
-data/
 tempo/
+data/
 temp.txt
+load_tiktok_data.py
+tiktok/
+tiktok_post.py
+videos/
