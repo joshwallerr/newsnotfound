@@ -39,6 +39,24 @@ The article creation process can be broken down into the following stages:
 
 See [`load_headlines.py`](https://github.com/joshwallerr/newsnotfound/blob/main/load_headlines.py) for each category's sources list.
 
+## CRON Schedule
+
+| Schedule | Command |
+|--------------|---------------------------|
+| 0 * * * *    | python3 load_headlines.py |
+| 0 */6 * * *  | python3 app.py world |
+| 0 */11 * * * | python3 app.py science |
+| 15 */6 * * * | python3 app.py uk |
+| 30 */6 * * * | python3 app.py us |
+| 36 */8 * * * | python3 app.py teesside |
+| 1 8 * * *    | python3 app.py tyneside |
+| 3 8 * * *    | python3 app.py sunderland |
+| 6 8 * * *    | python3 app.py worcester |
+| 9 8 * * *    | python3 app.py bedford |
+| 12 8 * * *   | python3 app.py norwich |
+| 15 8 * * *   | python3 app.py west_yorkshire |
+| 18 8 * * *   | python3 app.py plymouth |
+
 ## Countribution
 
 Any and all contributions are welcome and massively appreciated.
