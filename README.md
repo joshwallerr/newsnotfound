@@ -46,3 +46,7 @@ Any and all contributions are welcome and massively appreciated.
 Please use the [Issues](https://github.com/joshwallerr/newsnotfound/issues) tab for tracking feature requests and bugs.
 
 We use [GitHub Discussions](https://github.com/joshwallerr/newsnotfound/discussions) for general questions and conversations about this project.
+
+## Contact
+
+For all enquiries, please [contact us here](https://newsnotfound.com/contact/).
