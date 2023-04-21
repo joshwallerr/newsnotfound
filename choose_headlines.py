@@ -4,6 +4,10 @@ import random
 import os
 
 def find_most_suitable_headlines(category):
+    """
+    This function reads and filters headlines from CSV files based on a given category, and returns the
+    most suitable headlines that have not been covered before.
+    """
     # Read related_headlines.csv
     with open(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'data', 'related_headlines.csv'), "r") as f:
         reader = csv.reader(f)

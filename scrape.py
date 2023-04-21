@@ -2,6 +2,10 @@ import requests
 from bs4 import BeautifulSoup
 
 def headlines_links(urls):
+    """
+    This function scrapes headlines and links from various news websites and returns
+    them in a dictionary.
+    """
     all_headlines_links = {}
 
     recursive_count = 0
@@ -234,6 +238,11 @@ def headlines_links(urls):
 
 
 def get_urls(headlines, headlines_links):
+    """
+    This function takes in a list of headlines and a dictionary of headline and links, removes backslashes
+    from the headlines, and returns a list of URLs corresponding to the headlines found in the
+    dictionary.
+    """
     # Remove backslashes from headlines
     headlines = [headline.replace('\\', '') for headline in headlines]
 
@@ -252,6 +261,10 @@ def get_urls(headlines, headlines_links):
 
 
 def scrape_articles(headlines, headlines_links):
+    """
+    This function scrapes articles from various news websites based on the provided headlines and their
+    corresponding links.
+    """
     print(headlines)
 
     urls = get_urls(headlines, headlines_links)
@@ -462,6 +475,10 @@ def scrape_articles(headlines, headlines_links):
 
 
 def get_article_images(urls):
+    """
+    This function takes a list of URLs, scrapes each URL for images, and returns a list of image URLs
+    for articles on a specific website.
+    """
     imgs = []
     for url in urls:
         response = requests.get(url)

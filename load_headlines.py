@@ -135,6 +135,10 @@ with open(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'data', 'head
 model = SentenceTransformer('paraphrase-distilroberta-base-v2')
 
 def process_headlines(headlines):
+    """
+    This function takes a list of headlines, encodes them using a pre-trained model, and returns a list
+    of related headlines based on cosine similarity scores.
+    """
     embeddings = model.encode(headlines, convert_to_tensor=True)
     related_headlines = []
     for i, headline in enumerate(headlines):

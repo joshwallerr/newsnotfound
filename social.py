@@ -32,6 +32,10 @@ else:
 
 
 def reddit_post(title, slug):
+    """
+    This function submits a post to the r/newsnotfound subreddit using the PRAW library and credentials from
+    a JSON file.
+    """
     subr = 'newsnotfound'
     credentials = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'client_secrets.json')
     
@@ -54,6 +58,9 @@ def reddit_post(title, slug):
 
 
 def ig_post_image(caption, image_url, instagram_account_id=ig_id, access_token=ig_access_token):
+    """
+    This function posts an image on Instagram with a caption and returns the response.
+    """
     url = graph_url + instagram_account_id + '/media'
     param = dict()
     param['access_token'] = access_token
@@ -68,6 +75,10 @@ def ig_post_image(caption, image_url, instagram_account_id=ig_id, access_token=i
 
 
 def fb_post_image(caption, image_url, facebook_account_id=fb_id, access_token=fb_access_token):
+    """
+    This function posts an image with a caption to a Facebook account using its ID and
+    access token.
+    """
     image_post_url = 'https://graph.facebook.com/{}/photos'.format(facebook_account_id)
     
     payload = {
@@ -82,6 +93,10 @@ def fb_post_image(caption, image_url, facebook_account_id=fb_id, access_token=fb
 
 
 def ig_post_video(caption, video_url, instagram_account_id=ig_id, access_token=ig_access_token):
+    """
+    This function posts a video on Instagram with a given caption and video URL using the
+    Instagram Graph API.
+    """
     url = graph_url + instagram_account_id + '/media'
     param = dict()
     param['access_token'] = access_token
@@ -108,17 +123,26 @@ def ig_publish_container(creation_id, instagram_account_id=ig_id, access_token=i
 
 
 def generate_ig_caption(excerpt, hashtags):
+    """
+    This function generates an Instagram caption by combining an excerpt and a set of hashtags.
+    """
     caption = excerpt + '\n\n' + hashtags
     return caption
 
 
 def generate_fb_caption(excerpt, slug):
+    """
+    This function generates a Facebook caption by combining an excerpt and a URL based on a given slug.
+    """
     url = 'https://newsnotfound.com/' + slug
     caption = excerpt + '\n\n' + 'Read the full story on our website: ' + url
     return caption
 
 
 def generate_ig_hashtags(topic):
+    """
+    This function generates Instagram hashtags based on a given topic.
+    """
     if topic == 'world':
         tags = '#worldnews #ainews #breakingnews #worldpolitics #worldnewstonight #internationalnews'
     elif topic == 'science':
@@ -134,6 +158,11 @@ def generate_ig_hashtags(topic):
 
 
 def generate_tiktok_video(story1, story2, story3, funny_story, image_url1, image_url2):
+    """
+    This function generates a TikTok video using the Elai API.
+
+    NOT IN USE
+    """
     elai_api_key = environ.get('ELAI_API_KEY')
     url = "https://apis.elai.io/api/v1/videos/renderTemplate/63fa2cd8912ad050602ece2f"
 
@@ -170,6 +199,12 @@ def generate_tiktok_video(story1, story2, story3, funny_story, image_url1, image
 
 
 def load_tiktok_data():
+    """
+    This function loads data from a CSV file into a SQLite database table for TikTok stories and
+    captions.
+
+    NOT IN USE
+    """
     # Connect to the database
     conn = sqlite3.connect(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'tiktok', 'tiktok.db'))
     c = conn.cursor()
@@ -191,6 +226,12 @@ def load_tiktok_data():
 
 
 def get_tiktok_story_caption():
+    """
+    This function retrieves a random unused row from a SQLite database and returns the values of two
+    specific columns from that row.
+
+    NOT IN USE
+    """
     # Connect to the database
     conn = sqlite3.connect(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'tiktok', 'tiktok.db'))
     c = conn.cursor()
@@ -217,6 +258,11 @@ def get_tiktok_story_caption():
 
 
 def retrieve_tiktok_video(video_id):
+    """
+    This function retrieves a TikTok video using its ID through the Elai API.
+
+    NOT IN USE
+    """
     # Get video URL
     elai_api_key = environ.get('ELAI_API_KEY')
     url = f"https://apis.elai.io/api/v1/videos/{video_id}"
@@ -233,32 +279,10 @@ def retrieve_tiktok_video(video_id):
 
 
 def download_tiktok_video(video_url):
+    """
+    This function downloads a TikTok video from a given URL and saves it as an MP4 file.
+    """
     response = requests.get(video_url)
 
     with open(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'videos', 'video.mp4'), 'wb') as f:
         f.write(response.content)
-
-
-# def upload_tiktok_video(caption):
-
-#     # Your TikTok account credentials
-#     username = environ.get('TIKTOK_USERNAME')
-#     password = environ.get('TIKTOK_PASSWORD')
-
-#     # initialize TikTokApi with your TikTok account credentials
-#     api = TikTokApi(username=username, password=password)
-
-#     # Set the path of the video to upload
-#     video_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'videos', 'video.mp4')
-
-#     # upload the video and add the caption
-#     video_id = api.upload_video(video_path, caption=caption)
-
-#     # print the video ID
-#     print('Video uploaded with ID:', video_id)
-
-
-
-# nnf_hl = headlines_links(['https://newsnotfound.com/'])
-# three_headlines = list(nnf_hl.keys())[:3]
-# print(three_headlines)
