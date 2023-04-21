@@ -1,5 +1,3 @@
-# Cron set to run this script every 6 hours
-
 from scrape import headlines_links, scrape_articles, get_urls
 import openai
 from os import environ, path
