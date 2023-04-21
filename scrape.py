@@ -122,6 +122,8 @@ def headlines_links(urls):
             for article in soup.find_all('a', class_="headline"):
                 headline_text = article.text
                 headline_link = article['href']
+                if '/sport/' in headline_link:
+                    continue
                 all_headlines_links[headline_text] = headline_link
 
         if 'thenorthernecho.co.uk' in url:
@@ -129,14 +131,14 @@ def headlines_links(urls):
             for article in soup.find_all('a', class_='mar-lead-story__link'):
                 headline_text = article.find('span').text
                 headline_link = 'https://www.thenorthernecho.co.uk' + article['href']
-                if 'lott' in headline_text.lower() or 'forecast' in headline_text.lower() or 'live:' in headline_text.lower() or '-live-' in headline_link:
+                if 'lott' in headline_text.lower() or 'forecast' in headline_text.lower() or 'live:' in headline_text.lower() or '-live-' in headline_link or '/sport/' in headline_link:
                     continue
                 all_headlines_links[headline_text] = headline_link
 
             for article in soup.find_all('a', class_='text-slate no-underline'):
                 headline_text = article.text
                 headline_link = 'https://www.thenorthernecho.co.uk' + article['href']
-                if 'lott' in headline_text.lower() or 'forecast' in headline_text.lower() or 'live:' in headline_text.lower() or '-live-' in headline_link:
+                if 'lott' in headline_text.lower() or 'forecast' in headline_text.lower() or 'live:' in headline_text.lower() or '-live-' in headline_link or '/sport/' in headline_link:
                     continue
                 all_headlines_links[headline_text] = headline_link
 
