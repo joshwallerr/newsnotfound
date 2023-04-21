@@ -1,4 +1,4 @@
-# NewsNotFound Article Creation
+# NewsNotFound Article Creation 📰
 
 This is the entire source code for NewsNotFound's article generation process. 
 
@@ -17,7 +17,7 @@ We believe this is the key to a genuine, trustworthy and transparent media lands
 [Click here to view our whitepaper](https://newsnotfound.com/whitepaper/)
 
 
-# Process Overview
+# Process Overview 🔍
 
 The article creation process can be broken down into the following stages:
 
@@ -37,7 +37,7 @@ The article creation process can be broken down into the following stages:
 
 ## Sources
 
-See `load_headlines.py` for each category's sources list.
+See [`load_headlines.py`](https://github.com/joshwallerr/newsnotfound/blob/main/load_headlines.py) for each category's sources list.
 
 ## Countribution
 
