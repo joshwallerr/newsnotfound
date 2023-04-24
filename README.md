@@ -6,11 +6,13 @@ This is the entire source code for NewsNotFound's article generation process.
 
 NewsNotFound is a news website located at https://newsnotfound.com.
 
+We want to build the most unbiased news platform on the internet.
+
 ![App Screenshot](http://newsnotfound.com/wp-content/uploads/2023/04/1677003418639-jpeg-e1682077026373.webp)
 
 Our mission is to lead the way in AI journalism by providing completely neutral and unbiased news articles that can be governed by the public.
 
-We believe this is the key to a genuine, trustworthy and transparent media landscape, void of the possibility of corruption.
+We believe this is the key to a genuine, trustworthy and transparent news source, void of the possibility of corruption.
 
 ## Project Whitepaper
 
