@@ -321,7 +321,6 @@ def generate_headline(article):
         raise Exception('Failed to generate headline.')
 
     # Prefix removal
-
     if 'Neutral and unbiased: ' in article_headline:
         article_headline = article_headline.replace("Neutral and unbiased: ", "")
 
@@ -333,6 +332,10 @@ def generate_headline(article):
 
     if 'Headline: ' in article_headline:
         article_headline = article_headline.replace("Headline: ", "")
+
+    # Remove period
+    if article_headline[-1] == '.':
+        article_headline = article_headline[:-1]
 
     # print(article_headline)
     return article_headline
