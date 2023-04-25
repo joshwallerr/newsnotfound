@@ -6,6 +6,7 @@ import ast
 import nltk
 from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
+from nltk.tokenize import sent_tokenize
 import csv
 import datetime
 import os
@@ -341,7 +342,7 @@ def generate_excerpt(article):
     """
     This function uses GPT-3 to generate a short, unbiased excerpt for a given news article.
     """
-    prompt = (f"Please generate me a short, unbiased excerpt for the below news article. The excerpt should be relatively short, and no more than one sentence long. Please just output the excerpt: {article}")
+    prompt = (f"Please generate me a short, unbiased excerpt for the below news article. The excerpt should be relatively short, and no more than one sentence long. The excerpt must be completely impartial and written from a neutral point of view. Please just output the excerpt: {article}")
     response = openai.ChatCompletion.create(
         model="gpt-3.5-turbo",
         messages=[
@@ -354,8 +355,24 @@ def generate_excerpt(article):
     )
     article_excerpt = response['choices'][0]['message']['content']
 
-    if article_excerpt == '':
-        return None
+
+    # Length check - make sure excerpt is no more than one sentence long
+    
+    num_sentences = len(sent_tokenize(article_excerpt))
+    if num_sentences > 1 or article_excerpt == '':
+        prompt = (f"Please generate me a short, unbiased excerpt for the below news article. The excerpt should be relatively short, and no more than one sentence long. The excerpt must be completely impartial and written from a neutral point of view. Please just output the excerpt: {article}")
+        response = openai.ChatCompletion.create(
+            model="gpt-3.5-turbo",
+            messages=[
+                {"role": "user", "content": prompt},
+            ],
+            temperature=0.5,
+            top_p=1,
+            frequency_penalty=0,
+            presence_penalty=0
+        )
+        article_excerpt = response['choices'][0]['message']['content']
+
     return article_excerpt
 
 
