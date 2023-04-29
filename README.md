@@ -58,6 +58,7 @@ See [`load_headlines.py`](https://github.com/joshwallerr/newsnotfound/blob/main/
 | 12 8 * * *   | python3 app.py norwich |
 | 15 8 * * *   | python3 app.py west_yorkshire |
 | 18 8 * * *   | python3 app.py plymouth |
+| 0 7 * * *    | python3 app.py india |
 
 ## Countribution
 
