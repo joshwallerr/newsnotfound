@@ -87,6 +87,13 @@ plymouth_urls = [
     'https://www.bbc.co.uk/news/england/devon',
 ]
 
+india_urls = [
+    'https://www.thehindu.com/news/national/',
+    'https://indianexpress.com/section/india/',
+    'https://www.bbc.co.uk/news/world/asia/india',
+    'https://www.reuters.com/world/india/',
+]
+
 all_urls = {
     'world': world_urls,
     'science': science_urls,
@@ -100,6 +107,7 @@ all_urls = {
     'norwich': norwich_urls,
     'west_yorkshire': west_yorkshire_urls,
     'plymouth': plymouth_urls,
+    'india': india_urls,
 }
 
 all_headlines_links = {}

@@ -14,6 +14,9 @@ lambda_package_load
 CreateNNFPost.zip
 tempo/
 data/
+data/headlines_links.json
+data/headlines.csv
+data/related_headlines.csv
 temp.txt
 load_tiktok_data.py
 tiktok/

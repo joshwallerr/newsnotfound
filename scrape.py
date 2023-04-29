@@ -234,6 +234,18 @@ def headlines_links(urls):
                 headline_link = article['href']
                 all_headlines_links[headline_text] = headline_link
 
+        if 'thehindu.com' in url:
+            for article in soup.find_all('h3', class_="title"):
+                headline_text = article.find('a').text
+                headline_link = article.find('a')['href']
+                all_headlines_links[headline_text] = headline_link
+
+        if 'indianexpress.com' in url:
+            for article in soup.find_all('h2', class_="title"):
+                headline_text = article.find('a').text
+                headline_link = article.find('a')['href']
+                all_headlines_links[headline_text] = headline_link
+
     return all_headlines_links
 
 
@@ -292,6 +304,8 @@ def scrape_articles(headlines, headlines_links):
                 for div in text_block_divs:
                     p = div.find("p")
                     text = p.get_text()
+                    if 'click here' in text.lower() or '':
+                        continue
                     temp_article += "\n\n" + text
 
             if 'washingtonpost.com' in url:
@@ -457,6 +471,21 @@ def scrape_articles(headlines, headlines_links):
                     if "read more" in text.lower() or "read next" in text.lower():
                         continue
                     temp_article += "\n\n" + text
+
+            if 'thehindu.com' in url:
+                article_div = soup.find('div', class_='articlebodycontent')
+                for p in article_div.find_all('p'):
+                    if p.get('class') is None:
+                        text = p.get_text()
+                        if 'also read: ' in text.lower():
+                            continue
+                        temp_article += '\n\n' + text
+
+            if 'indianexpress.com' in url:
+                article_div = soup.find('div', id='pcl-full-content')
+                for p in article_div.find_all('p'):
+                    text = p.get_text()
+                    temp_article += '\n\n' + text
 
             articles.append(temp_article)
         except:
