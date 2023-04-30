@@ -504,7 +504,19 @@ def generate_image(headline):
         verbose=True,
     )
 
-    sd_prompt = f"a modern, highly detailed image in the style of an oil painting that best visualises the following news headline: {headline}"
+    # Generate unique prompt
+    prompt = (f'write me a short, one sentence long text-to-image prompt that best visualises the following headline: {headline}\n\nBegin with "an image in the style of a painting"')
+    response = openai.ChatCompletion.create(
+        model="gpt-3.5-turbo",
+        messages=[
+            {"role": "user", "content": prompt},
+        ],
+        temperature=0.3,
+        top_p=1,
+        frequency_penalty=0,
+        presence_penalty=0
+    )
+    sd_prompt = response['choices'][0]['message']['content']
 
     answers = stability_api.generate(
         prompt=sd_prompt
