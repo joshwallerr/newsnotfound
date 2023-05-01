@@ -505,7 +505,7 @@ def generate_image(headline):
     )
 
     # Generate unique prompt
-    prompt = (f'write me a short, one sentence long text-to-image prompt that best visualises the following headline: {headline}\n\nBegin with "an image in the style of a painting"')
+    prompt = (f'write me a short, one sentence long text-to-image prompt that best visualises the following headline: {headline}\n\nBegin with "A high resolution image in the style of 64-bit pixel art"')
     response = openai.ChatCompletion.create(
         model="gpt-3.5-turbo",
         messages=[
