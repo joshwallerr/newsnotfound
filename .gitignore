@@ -6,7 +6,9 @@ stable_diffusion/
 test2.py
 __pycache__/
 covered.csv
+images/
 images/image.png
+images/image.webp
 logs.txt
 client_secrets.json
 refreshtoken.py

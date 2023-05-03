@@ -110,6 +110,12 @@ def main():
     print('--------------- HTML LIST SEPARATOR ------------------')
     print(html_list)
 
+    # Generate post image and get id
+    img_prompt = generate_image(article_headline)
+    image_id_url = upload_image()
+    featured_media_id = image_id_url[0]
+    featured_media_url = image_id_url[1]
+
     # GENERATE SOURCES LIST
     links_to_headlines = get_urls(chosen_headlines, all_headlines_links)
 
@@ -119,17 +125,14 @@ def main():
     sources_html = generate_sources_list(sources)
     print(sources_html)
 
+    # GENERATE X-RAY SECTION
+    xray_html = generate_xray(sources_html, img_prompt)
+
     # Combine and prepare article content
-    html_content = f'<h3 class=\"title_seps\">At a glance</h3>{html_list}<h3 class=\"title_seps\">The details</h3>{html_article}<h3 id=\"sources-head\">Sources</h3><div id=\"sources-list\">{sources_html}</div>'
+    html_content = f'<h3 class=\"title_seps\">At a glance</h3>{html_list}<h3 class=\"title_seps\">The details</h3>{html_article}<h3 id=\"sources-head\">Article X-ray</h3>{xray_html}'
 
     # Get categories
     category_ids = get_categories(CATEGORY)
-
-    # Generate post image and get id
-    generate_image(article_headline)
-    image_id_url = upload_image()
-    featured_media_id = image_id_url[0]
-    featured_media_url = image_id_url[1]
 
     # Create Wordpress post
     response_code = create_wordpress_post(html_content, article_headline, article_excerpt, article_slug, category_ids, featured_media_id)
@@ -456,6 +459,11 @@ def generate_sources_list(sources):
     return sources_list
 
 
+def generate_xray(sources_html, image_prompt):
+    xray_html = f"""<div class="taccordion-div"><button class="taccordion">Sources</button><div class="tpanel"><div id=\"sources-list\"><p>Here are all the sources used to create this article:</p>{sources_html}</div></div></div><div class="taccordion-div"><button class="taccordion">Image prompt</button><div class="tpanel"><p>{image_prompt}</p></div></div>"""
+    return xray_html
+
+
 def get_categories(topic):
     """
     This function takes a topic (news category e.g. world, science) as input and returns a list of
@@ -498,6 +506,8 @@ def generate_image(headline):
     """
     This function generates an image in the style of an oil painting based on a given news headline using
     the Stability API.
+
+    It will return the prompt used for use in the x-ray section.
     """
     stability_api = client.StabilityInference(
         key=environ.get('STABILITY_KEY'),
@@ -530,6 +540,8 @@ def generate_image(headline):
                 img = Image.open(io.BytesIO(artifact.binary))
                 img.save(path.join(basedir, 'images', 'image.webp'), 'webp')
                 # img.save(path.join(basedir, 'images', 'image.png'), 'png')
+
+    return sd_prompt
 
 
 def upload_image():
@@ -564,7 +576,7 @@ def create_wordpress_post(article, headline, excerpt, slug, categories, image_id
     data = {
     'title' : headline,
     'excerpt' : excerpt,
-    'status': 'publish',
+    'status': 'draft',
     'slug' : slug,
     'content': article,
     "categories": categories,
