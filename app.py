@@ -126,7 +126,12 @@ def main():
     print(sources_html)
 
     # GENERATE X-RAY SECTION
-    xray_html = generate_xray(sources_html, img_prompt)
+    source_names = get_source_names(links_to_headlines)
+    print(source_names)
+
+    separate_facts = facts_to_lists(facts)
+
+    xray_html = generate_xray(sources_html, img_prompt, source_names, separate_facts)
 
     # Combine and prepare article content
     html_content = f'<h3 class=\"title_seps\">At a glance</h3>{html_list}<h3 class=\"title_seps\">The details</h3>{html_article}<h3 id=\"sources-head\">Article X-ray</h3>{xray_html}'
@@ -459,8 +464,64 @@ def generate_sources_list(sources):
     return sources_list
 
 
-def generate_xray(sources_html, image_prompt):
-    xray_html = f"""<div class="taccordion-div"><button class="taccordion">Sources</button><div class="tpanel"><div id=\"sources-list\"><p>Here are all the sources used to create this article:</p>{sources_html}</div></div></div><div class="taccordion-div"><button class="taccordion">Image prompt</button><div class="tpanel"><p>{image_prompt}</p></div></div>"""
+def get_source_names(source_urls):
+    """
+    This function takes in a list of source URLs and returns the source names as a list of domains.
+    """
+    from urllib.parse import urlparse
+
+    source_names = []
+    for url in source_urls:
+        parsed_url = urlparse(url)
+        domain = parsed_url.netloc
+
+        # Remove 'www.' if present
+        if domain.startswith('www.'):
+            domain = domain[4:]
+
+        source_names.append(domain)
+
+    return source_names
+
+
+def generate_xray(sources_html, image_prompt, source_names, facts):
+    fact_table = ''.join([f"""
+    <table class="tg">
+    <thead>
+      <tr>
+        <th class="tg-0pky">{source}</th>
+      </tr>
+    </thead>
+    <tbody>
+      {"".join([f"<tr><td class='tg-c3ow'>{fact}</td></tr>" for fact in source_facts])}
+    </tbody>
+    </table>
+    """ for source, source_facts in zip(source_names, facts)])
+
+    xray_html = f"""
+    <div class="taccordion-div">
+        <button class="taccordion">Sources</button>
+        <div class="tpanel">
+            <div id=\"sources-list\">
+                <p>Here are all the sources used to create this article:</p>{sources_html}
+            </div>
+        </div>
+    </div>
+    <div class="taccordion-div">
+        <button class="taccordion">Image prompt</button>
+        <div class="tpanel">
+            <p>{image_prompt}</p>
+        </div>
+    </div>
+    <div class="taccordion-div">
+        <button class="taccordion">Fact attribution</button>
+        <div class="tpanel">
+            <p>This section links each of the article's facts back to its original source.</p>
+            <p>If you have any suspicions that false information is present in the article, you can use this section to investigate where it came from.</p>
+            {fact_table}
+        </div>
+    </div>
+    """
     return xray_html
 
 
@@ -576,7 +637,7 @@ def create_wordpress_post(article, headline, excerpt, slug, categories, image_id
     data = {
     'title' : headline,
     'excerpt' : excerpt,
-    'status': 'publish',
+    'status': 'published',
     'slug' : slug,
     'content': article,
     "categories": categories,
@@ -608,6 +669,25 @@ def unescape_quotes(list_of_strings):
         unescaped_item = item.replace("\\'", "'").replace('\\"', '"').replace('\\‘', '‘').replace('\\’', '’').replace('\\,', ',')
         unescaped_list.append(unescaped_item)
     return unescaped_list
+
+
+def facts_to_lists(facts):
+    """
+    This function takes a list of facts and returns a new list for every list in facts, where each new list
+    is another list containing one sentence from the original list of facts.
+    """
+    import spacy
+
+    new_facts_list = []
+
+    nlp = spacy.load("en_core_web_sm")
+
+    for fact_set in facts:
+        doc = nlp(fact_set)
+        sentences = [sent.text for sent in doc.sents]
+        new_facts_list.append(sentences)
+
+    return new_facts_list
 
 
 def format_article(article):
