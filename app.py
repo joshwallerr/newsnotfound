@@ -637,7 +637,7 @@ def create_wordpress_post(article, headline, excerpt, slug, categories, image_id
     data = {
     'title' : headline,
     'excerpt' : excerpt,
-    'status': 'published',
+    'status': 'publish',
     'slug' : slug,
     'content': article,
     "categories": categories,
