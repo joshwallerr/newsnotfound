@@ -570,13 +570,17 @@ def generate_image(headline):
 
     It will return the prompt used for use in the x-ray section.
     """
-    stability_api = client.StabilityInference(
-        key=environ.get('STABILITY_KEY'),
-        verbose=True,
-    )
+    stability_api_key = environ.get('STABILITY_KEY')
+    engine_id = "stable-diffusion-512-v2-1"
+
+    api_host = os.getenv('API_HOST', 'https://api.stability.ai')
+    url = f"{api_host}/v1/engines/list"
+
+    if stability_api_key is None:
+        raise Exception("Missing Stability API key.")
 
     # Generate unique prompt
-    prompt = (f'write me a short, one sentence long text-to-image prompt that best visualises the following headline: {headline}\n\nBegin with "A high resolution image in the style of 64-bit pixel art"\n\nKeep it simple and dont be too specific.')
+    prompt = (f'write me a short, one sentence long text-to-image prompt that best visualises the following headline: {headline}\n\nThe image will be in the style of pixel art, but there is no need to specify this.\n\nKeep it extremely simple and dont be too specific.\n\nThe image engine does not handle words well, so under no circumstances should you ask it to write words onto the image.\n\nFor best results, do not go into detail.')
     response = openai.ChatCompletion.create(
         model="gpt-3.5-turbo",
         messages=[
@@ -589,18 +593,38 @@ def generate_image(headline):
     )
     sd_prompt = response['choices'][0]['message']['content']
 
-    answers = stability_api.generate(
-        prompt=sd_prompt
+
+    response = requests.post(
+        f"{api_host}/v1/generation/{engine_id}/text-to-image",
+        headers={
+            "Content-Type": "application/json",
+            "Accept": "application/json",
+            "Authorization": f"Bearer {stability_api_key}"
+        },
+        json={
+            "text_prompts": [
+                {
+                    "text": sd_prompt,
+                }
+            ],
+            "cfg_scale": 7,
+            "clip_guidance_preset": "NONE",
+            "height": 512,
+            "width": 512,
+            "samples": 1,
+            "steps": 50,
+            "style_preset": "pixel-art",
+        },
     )
 
-    for resp in answers:
-        for artifact in resp.artifacts:
-            if artifact.finish_reason == generation.FILTER:
-                raise Exception('Safety filters activated, please remove inappropriate prompt.')
-            if artifact.type == generation.ARTIFACT_IMAGE:
-                img = Image.open(io.BytesIO(artifact.binary))
-                img.save(path.join(basedir, 'images', 'image.webp'), 'webp')
-                # img.save(path.join(basedir, 'images', 'image.png'), 'png')
+    if response.status_code != 200:
+        raise Exception("Non-200 response: " + str(response.text))
+
+    data = response.json()
+
+    for i, image in enumerate(data["artifacts"]):
+        with open(path.join(basedir, 'images', 'image.webp'), "wb") as f:
+            f.write(base64.b64decode(image["base64"]))
 
     return sd_prompt
 
