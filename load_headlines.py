@@ -94,6 +94,12 @@ india_urls = [
     'https://www.reuters.com/world/india/',
 ]
 
+brazil_urls = [
+    'https://www.aljazeera.com/where/brazil/',
+    'https://www.reuters.com/news/archive/brazil',
+    'https://www1.folha.uol.com.br/internacional/en/brazil/',
+]
+
 all_urls = {
     'world': world_urls,
     'science': science_urls,
@@ -108,6 +114,7 @@ all_urls = {
     'west_yorkshire': west_yorkshire_urls,
     'plymouth': plymouth_urls,
     'india': india_urls,
+    'brazil': brazil_urls,
 }
 
 all_headlines_links = {}

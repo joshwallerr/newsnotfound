@@ -8,12 +8,9 @@ def headlines_links(urls):
     """
     all_headlines_links = {}
 
-    recursive_count = 0
     for url in urls:
         response = requests.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
-
-        recursive_count += 16
 
         if 'telegraph.co.uk' in url:
             for headline in soup.find_all('a', class_='list-headline__link u-clickable-area__link'):
@@ -42,14 +39,14 @@ def headlines_links(urls):
                 all_headlines_links[headline_text] = headline_link
 
         if 'independent.co.uk' in url:
-            if recursive_count > 16:
-                recursive_count = 0
-                continue
-
+            loop_count = 0
             for article in soup.find_all('a', class_='title'):
+                if loop_count > 16:
+                    break
                 headline_text = article.text
                 headline_link = 'https://www.independent.co.uk' + article['href']
                 all_headlines_links[headline_text] = headline_link
+                loop_count += 1
 
         if 'newscientist.com' in url:
             for article in soup.find_all('div', class_='card__content'):
@@ -64,7 +61,7 @@ def headlines_links(urls):
                 headline_link = headline['href']
                 all_headlines_links[headline_text] = headline_link
 
-        if 'reuters.com' in url:
+        if 'reuters.com' in url and '/archive/' not in url:
             for article in soup.find_all('a', attrs={"data-testid": "Heading"}):
                 try:
                     headline_text = article.select_one('span').text
@@ -245,6 +242,42 @@ def headlines_links(urls):
                 headline_text = article.find('a').text
                 headline_link = article.find('a')['href']
                 all_headlines_links[headline_text] = headline_link
+
+        if 'aljazeera.com' in url:
+            for article in soup.find_all('a', class_="u-clickable-card__link"):
+                headline_text = article.find('span').text
+                headline_link = 'https://www.aljazeera.com' + article['href']
+                all_headlines_links[headline_text] = headline_link
+
+        if 'reuters.com' in url and '/archive/' in url:
+            article_div = soup.find('div', class_="column1")
+            for article in article_div.find_all('div', class_="story-content"):
+                headline_text = article.find('h3').text
+                headline_link = 'https://www.reuters.com/' + article.find('a')['href']
+                all_headlines_links[headline_text] = headline_link
+
+        if 'brazilian.report' in url:
+            article_div = soup.find('div', class_="col-main")
+            for article in article_div.find_all('div', class_="news-card"):
+                headline_text = article.find('h3').text
+                headline_link = article.find('a')['href']
+                all_headlines_links[headline_text] = headline_link
+
+        if 'folha.uol.com.br' in url:
+            # Get hero item
+            for article in soup.find_all('a', class_='c-main-headline__wrapper'):
+                headline_text = article.find('h2').text
+                headline_link = article.find('a', class_='c-main-headline__url')['href']
+                all_headlines_links[headline_text] = headline_link
+
+            loop_count = 0
+            for article in soup.find_all('div', class_="c-headline__content"):
+                if loop_count > 16:
+                    break
+                headline_text = article.find('h2').text
+                headline_link = article.find('a')['href']
+                all_headlines_links[headline_text] = headline_link
+                loop_count += 1
 
     return all_headlines_links
 
@@ -485,6 +518,20 @@ def scrape_articles(headlines, headlines_links):
                 article_div = soup.find('div', id='pcl-full-content')
                 for p in article_div.find_all('p'):
                     text = p.get_text()
+                    temp_article += '\n\n' + text
+
+            if 'aljazeera.com' in url:
+                article_div = soup.find('main', id='main-content-area')
+                for p in article_div.find_all('p'):
+                    text = p.get_text()
+                    temp_article += '\n\n' + text
+
+            if 'folha.uol.com.br' in url:
+                article_div = soup.find('div', class_='c-news__body')
+                for p in article_div.find_all('p'):
+                    text = p.get_text()
+                    if 'translated by' in text.lower() or 'read the article in the original language' in text.lower():
+                        continue
                     temp_article += '\n\n' + text
 
             articles.append(temp_article)
