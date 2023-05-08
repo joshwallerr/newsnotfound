@@ -100,6 +100,12 @@ brazil_urls = [
     'https://www1.folha.uol.com.br/internacional/en/brazil/',
 ]
 
+turkey_urls = [
+    'https://www.aljazeera.com/where/turkey/',
+    'https://www.reuters.com/news/archive/turkey',
+    'https://www.independent.co.uk/topic/turkey',
+]
+
 all_urls = {
     'world': world_urls,
     'science': science_urls,
@@ -115,6 +121,7 @@ all_urls = {
     'plymouth': plymouth_urls,
     'india': india_urls,
     'brazil': brazil_urls,
+    'turkey': turkey_urls,
 }
 
 all_headlines_links = {}
