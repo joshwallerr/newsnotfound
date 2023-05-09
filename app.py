@@ -151,15 +151,10 @@ def main():
     else:
         raise Exception('Could not push to Wordpress')
 
-    social_exclusions = ['tyneside', 'sunderland', 'worcester', 'bedford', 'norwich', 'west_yorkshire', 'plymouth', 'india', 'brazil', 'turkey']
-    reddit_exclusions = ['teesside', 'tyneside', 'sunderland', 'worcester', 'bedford', 'norwich', 'west_yorkshire', 'plymouth', 'world', 'uk', 'science', 'us', 'india', 'brazil', 'turkey']
+    social_exclusions = ['tyneside', 'sunderland', 'worcester', 'bedford', 'norwich', 'west_yorkshire', 'plymouth', 'india', 'brazil', 'turkey', 'uk', 'world', 'science', 'us']
 
     if CATEGORY in social_exclusions:
         return
-
-    if CATEGORY not in reddit_exclusions:
-        # Post on subreddit
-        reddit_post(article_headline, article_slug)
 
     # Get Instagram hashtags
     ig_tags = generate_ig_hashtags(CATEGORY)
