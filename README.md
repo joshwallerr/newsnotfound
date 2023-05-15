@@ -61,6 +61,7 @@ See [`load_headlines.py`](https://github.com/joshwallerr/newsnotfound/blob/main/
 | 0 7 * * *    | At 07:00                         | python3 app.py india          |
 | 0 14 * * *   | At 14:00                         | python3 app.py brazil         |
 | 0 9 * * *    | At 09:00                         | python3 app.py turkey         |
+| 0 10 * * *   | At 10:00                         | python3 app.py uk_politics    |
 
 ## Countribution
 

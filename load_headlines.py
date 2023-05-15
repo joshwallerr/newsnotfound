@@ -106,6 +106,15 @@ turkey_urls = [
     'https://www.independent.co.uk/topic/turkey',
 ]
 
+uk_politics_urls = [
+    'https://www.bbc.co.uk/news/politics',
+    'https://www.theguardian.com/politics/all',
+    'https://www.independent.co.uk/news/uk/politics',
+    'https://news.sky.com/politics',
+    'https://www.telegraph.co.uk/politics/',
+    'https://www.huffingtonpost.co.uk/politics/',
+]
+
 all_urls = {
     'world': world_urls,
     'science': science_urls,
@@ -122,6 +131,7 @@ all_urls = {
     'india': india_urls,
     'brazil': brazil_urls,
     'turkey': turkey_urls,
+    'uk_politics': uk_politics_urls,
 }
 
 all_headlines_links = {}

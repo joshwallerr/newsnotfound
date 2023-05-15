@@ -36,6 +36,8 @@ def headlines_links(urls):
                 headline = article.find('a', class_='u-faux-block-link__overlay js-headline-text')
                 headline_text = headline.text
                 headline_link = headline['href']
+                if '/live/' in headline_link.lower():
+                    continue
                 all_headlines_links[headline_text] = headline_link
 
         if 'independent.co.uk' in url:
@@ -278,6 +280,12 @@ def headlines_links(urls):
                 headline_link = article.find('a')['href']
                 all_headlines_links[headline_text] = headline_link
                 loop_count += 1
+
+        if 'huffingtonpost.co.uk' in url:
+            for article in soup.find_all('div', class_="card__headlines"):
+                headline_text = article.find('h3').text
+                headline_link = article.find('a')['href']
+                all_headlines_links[headline_text] = headline_link
 
     return all_headlines_links
 
@@ -532,6 +540,12 @@ def scrape_articles(headlines, headlines_links):
                     text = p.get_text()
                     if 'translated by' in text.lower() or 'read the article in the original language' in text.lower():
                         continue
+                    temp_article += '\n\n' + text
+
+            if 'huffingtonpost.co.uk' in url:
+                article_div = soup.find('section', class_='entry__content-list js-entry-content js-cet-subunit')
+                for p in article_div.find_all('div', class_='primary-cli'):
+                    text = p.get_text()
                     temp_article += '\n\n' + text
 
             articles.append(temp_article)
