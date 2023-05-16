@@ -47,7 +47,7 @@ See [`load_headlines.py`](https://github.com/joshwallerr/newsnotfound/blob/main/
 |--------------|----------------------------------|:-----------------------------:|
 | 0 * * * *    | Every hour                       | python3 load_headlines.py     |
 | 0 */6 * * *  | Every 6 hours                    | python3 app.py world          |
-| 0 */11 * * * | Every 11 hours                   | python3 app.py science        |
+| 0 11 * * *   | At 11:00                         | python3 app.py science        |
 | 15 */6 * * * | At minute 15 past every 6th hour | python3 app.py uk             |
 | 30 */6 * * * | At minute 30 past every 6th hour | python3 app.py us             |
 | 36 */8 * * * | At minute 36 past every 8th hour | python3 app.py teesside       |
@@ -62,6 +62,7 @@ See [`load_headlines.py`](https://github.com/joshwallerr/newsnotfound/blob/main/
 | 0 14 * * *   | At 14:00                         | python3 app.py brazil         |
 | 0 9 * * *    | At 09:00                         | python3 app.py turkey         |
 | 0 10 * * *   | At 10:00                         | python3 app.py uk_politics    |
+| 0 10 * * *   | At 11:15                         | python3 app.py technology     |
 
 ## Countribution
 

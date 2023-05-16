@@ -115,6 +115,13 @@ uk_politics_urls = [
     'https://www.huffingtonpost.co.uk/politics/',
 ]
 
+technology_urls = [
+    'https://www.bbc.co.uk/news/technology',
+    'https://news.sky.com/technology',
+    'https://www.reuters.com/technology/',
+    'https://www.independent.co.uk/tech',
+]
+
 all_urls = {
     'world': world_urls,
     'science': science_urls,
@@ -132,6 +139,7 @@ all_urls = {
     'brazil': brazil_urls,
     'turkey': turkey_urls,
     'uk_politics': uk_politics_urls,
+    'technology': technology_urls,
 }
 
 all_headlines_links = {}
