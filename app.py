@@ -574,7 +574,7 @@ def generate_image(headline):
     It will return the prompt used for use in the x-ray section.
     """
     stability_api_key = environ.get('STABILITY_KEY')
-    engine_id = "stable-diffusion-512-v2-1"
+    engine_id = "stable-diffusion-xl-beta-v2-2-2"
 
     api_host = os.getenv('API_HOST', 'https://api.stability.ai')
     url = f"{api_host}/v1/engines/list"
@@ -624,6 +624,11 @@ def generate_image(headline):
         raise Exception("Non-200 response: " + str(response.text))
 
     data = response.json()
+
+    print(data['artifacts'][0]['finishReason'])
+
+    if data['artifacts'][0]['finishReason'] == "CONTENT_FILTERED":
+        return generate_image(headline)
 
     for i, image in enumerate(data["artifacts"]):
         with open(path.join(basedir, 'images', 'image.webp'), "wb") as f:
