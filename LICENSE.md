@@ -1,4 +1,4 @@
-# NewsNotFound Non-Commercial License
+# NewsNotFound Non-Commercial and Non-Distribution License
 
 ## 1. Definitions
 
@@ -6,24 +6,27 @@
 
 "Use" means to access, modify, integrate, or utilize the Software in any way.
 
+"Distribute" means to deliver, convey, make available, or circulate the Software to any third party.
+
 "Commercial Use" means using the Software for the purpose of monetary gain, which includes, but is not limited to, revenue generation, selling, leasing, or licensing the Software for a fee.
 
 ## 2. Grant of Rights
 
-Subject to the terms and conditions of this License, NewsNotFound hereby grants to you a non-transferable, non-exclusive, worldwide, royalty-free license to use the Software for Non-Commercial purposes only.
+Subject to the terms and conditions of this License, NewsNotFound hereby grants to you a non-transferable, non-exclusive, worldwide, royalty-free license to use the Software for Non-Commercial purposes only. This license does not include the right to distribute the Software.
 
 ## 3. Restrictions
 
 You agree not to, and shall not permit any third party to:
 
 - Use the Software for Commercial Use.
+- Distribute the Software.
 - Remove or alter any proprietary notices or labels on the Software.
 - Use the Software to infringe upon any trademarks held by NewsNotFound.
 - Use the Software in connection with any patent-related activities.
 
 ## 4. No Warranty
 
-The Software is provided "as is", without warranty of any kind, express or implied, including but not limited to the warranties of merchantability, fitness for a particular purpose and noninfringement. 
+The Software is provided "as is", without warranty of any kind, express or implied, including but not limited to the warranties of merchantability, fitness for a particular purpose and noninfringement.
 
 ## 5. Limitation of Liability
 
