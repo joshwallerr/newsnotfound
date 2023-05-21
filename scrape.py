@@ -22,7 +22,12 @@ def headlines_links(urls):
             for article in soup.find_all('div', class_='gs-c-promo-body'):
                 headline = article.find('h3')
                 headline_text = headline.text
-                headline_link = 'https://www.bbc.co.uk' + article.find('a')['href']
+                headline_link = article.find('a')['href']
+                video = article.find('span', class_='qa-offscreen gs-u-vh')
+                if video:
+                    continue
+                if headline_link[0] == '/':
+                    headline_link = 'https://www.bbc.co.uk' + headline_link
                 all_headlines_links[headline_text] = headline_link
 
         if 'washingtonpost.com' in url:
@@ -287,6 +292,40 @@ def headlines_links(urls):
                 headline_link = article.find('a')['href']
                 all_headlines_links[headline_text] = headline_link
 
+        if 'ft.com' in url:
+            news_div = soup.find('ul', class_="o-teaser-collection__list js-stream-list")
+            for article in news_div.find_all('li', class_="o-teaser-collection__item o-grid-row"):
+                headline_text = article.find('a', class_='js-teaser-heading-link')
+                if headline_text is None:
+                    continue
+                headline_text = headline_text.text
+                headline_link = 'https://www.ft.com' + article.find('a', class_='js-teaser-heading-link')['href']
+                all_headlines_links[headline_text] = headline_link
+
+        if 'yahoo.com' in url and '/topics/' in url:
+            for article in soup.find_all('a', class_="stream-title"):
+                headline_text = article.text
+                headline_link = article['href']
+                if headline_link[0] == '/':
+                    headline_link = 'https://www.yahoo.com' + headline_link
+                all_headlines_links[headline_text] = headline_link
+
+        if 'yahoo.com' in url and '/topics/' not in url:
+            for article in soup.find_all('a', class_="mega-item-header-link"):
+                headline_text = article.text
+                headline_link = article['href']
+                if headline_link[0] == '/':
+                    headline_link = 'https://www.yahoo.com' + headline_link
+                all_headlines_links[headline_text] = headline_link
+            
+        if 'standard.co.uk' in url:
+            for article in soup.find_all('a', class_="title"):
+                headline_text = article.text
+                headline_link = article['href']
+                if headline_link[0] == '/':
+                    headline_link = 'https://www.standard.co.uk' + headline_link
+                all_headlines_links[headline_text] = headline_link
+
     return all_headlines_links
 
 
@@ -545,6 +584,27 @@ def scrape_articles(headlines, headlines_links):
             if 'huffingtonpost.co.uk' in url:
                 article_div = soup.find('section', class_='entry__content-list js-entry-content js-cet-subunit')
                 for p in article_div.find_all('div', class_='primary-cli'):
+                    text = p.get_text()
+                    temp_article += '\n\n' + text
+
+            if 'ft.com' in url:
+                print(soup)
+                article_div = soup.find('div', class_='article__content-body n-content-body js-article__content-body')
+                for p in article_div.find_all('p'):
+                    text = p.get_text()
+                    temp_article += '\n\n' + text
+
+            if 'yahoo.com' in url:
+                article_div = soup.find('div', class_='caas-body')
+                for p in article_div.find_all('p'):
+                    text = p.get_text()
+                    if '(reporting by' in text.lower():
+                        continue
+                    temp_article += '\n\n' + text
+            
+            if 'standard.co.uk' in url:
+                article_div = soup.find('div', id='main')
+                for p in article_div.find_all('p'):
                     text = p.get_text()
                     temp_article += '\n\n' + text
 
