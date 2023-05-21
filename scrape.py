@@ -9,7 +9,7 @@ def headlines_links(urls):
     all_headlines_links = {}
 
     for url in urls:
-        response = requests.get(url)
+        response = requests.get(url, headers={'User-Agent': 'Mozilla/5.0'})
         soup = BeautifulSoup(response.text, 'html.parser')
 
         if 'telegraph.co.uk' in url:
@@ -326,6 +326,39 @@ def headlines_links(urls):
                     headline_link = 'https://www.standard.co.uk' + headline_link
                 all_headlines_links[headline_text] = headline_link
 
+        if 'businessgreen.com' in url:
+            article_div = soup.find('div', class_="platformheading")
+            for article in soup.find_all('a', class_="lock"):
+                headline_text = article.text
+                headline_link = article['href']
+                if headline_link[0] == '/':
+                    headline_link = 'https://www.businessgreen.com' + headline_link
+                all_headlines_links[headline_text] = headline_link
+
+        if 'solarpowerportal.co.uk' in url:
+            for article in soup.find_all('h2', class_="article-list__title"):
+                headline_text = article.find('a').text
+                headline_link = article.find('a')['href']
+                if headline_link[0] == '/':
+                    headline_link = 'https://www.solarpowerportal.co.uk' + headline_link
+                all_headlines_links[headline_text] = headline_link
+
+        if 'pv-magazine.com' in url:
+            for article in soup.find_all('h2', class_="entry-title"):
+                headline_text = article.find('a').text
+                headline_link = article.find('a')['href']
+                if headline_link[0] == '/':
+                    headline_link = 'https://www.pv-magazine.com' + headline_link
+                all_headlines_links[headline_text] = headline_link
+
+        if 'solarpowerworldonline.com' in url:
+            for article in soup.find_all('h2', class_="entry-title"):
+                headline_text = article.find('a').text
+                headline_link = article.find('a')['href']
+                if headline_link[0] == '/':
+                    headline_link = 'https://www.solarpowerworldonline.com' + headline_link
+                all_headlines_links[headline_text] = headline_link
+
     return all_headlines_links
 
 
@@ -367,7 +400,7 @@ def scrape_articles(headlines, headlines_links):
     articles = []
 
     for url in urls:
-        response = requests.get(url)
+        response = requests.get(url, headers={'User-Agent': 'Mozilla/5.0'})
         soup = BeautifulSoup(response.text, 'html.parser')
 
         temp_article = ""
@@ -604,6 +637,34 @@ def scrape_articles(headlines, headlines_links):
             
             if 'standard.co.uk' in url:
                 article_div = soup.find('div', id='main')
+                for p in article_div.find_all('p'):
+                    text = p.get_text()
+                    temp_article += '\n\n' + text
+
+            if 'businessgreen.com' in url:
+                article_div = soup.find('div', class_='article-body')
+                for p in article_div.find_all('p'):
+                    text = p.get_text()
+                    temp_article += '\n\n' + text
+
+            if 'solarpowerportal.co.uk' in url:
+                article_div = soup.find('div', class_='article__body')
+                for p in article_div.find_all('p'):
+                    text = p.get_text()
+                    if 'solar power portal' in text.lower() or 'solar summit' in text.lower() or 'image:' in text.lower():
+                        continue
+                    temp_article += '\n\n' + text
+
+            if 'pv-magazine.com' in url:
+                article_div = soup.find('div', class_='entry-content')
+                for p in article_div.find_all('p'):
+                    text = p.get_text()
+                    if 'pv magazine' in text.lower() or 'to continue reading' in text.lower() or 'image:' in text.lower() or 'pv-magazine' in text.lower():
+                        continue
+                    temp_article += '\n\n' + text
+
+            if 'solarpowerworldonline.com' in url:
+                article_div = soup.find('div', class_='entry-content')
                 for p in article_div.find_all('p'):
                     text = p.get_text()
                     temp_article += '\n\n' + text

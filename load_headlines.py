@@ -122,6 +122,13 @@ technology_urls = [
     'https://www.independent.co.uk/tech',
 ]
 
+finance_energy_solar_urls = [
+    'https://www.reuters.com/tags/solar/',
+    'https://www.solarpowerportal.co.uk/news/list',
+    'https://www.pv-magazine.com/news/',
+    'https://www.solarpowerworldonline.com/category/industry-news/',
+]
+
 all_urls = {
     'world': world_urls,
     'science': science_urls,
@@ -140,6 +147,7 @@ all_urls = {
     'turkey': turkey_urls,
     'uk_politics': uk_politics_urls,
     'technology': technology_urls,
+    'finance_energy_solar': finance_energy_solar_urls,
 }
 
 all_headlines_links = {}
