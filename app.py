@@ -133,8 +133,10 @@ def main():
 
     xray_html = generate_xray(sources_html, img_prompt, source_names, separate_facts)
 
+    ossummary = generate_ossummary(article)
+
     # Combine and prepare article content
-    html_content = f'<h3 class=\"title_seps\">At a glance</h3>{html_list}<h3 class=\"title_seps\">The details</h3>{html_article}<h3 id=\"sources-head\">Article X-ray</h3>{xray_html}'
+    html_content = f'<p class=\"title_seps\"><strong>One sentence summary</strong> - {ossummary}</p><h3 class=\"title_seps\">At a glance</h3>{html_list}<h3 class=\"title_seps\">The details</h3>{html_article}<h3 id=\"sources-head\">Article X-ray</h3>{xray_html}'
 
     # Get categories
     category_ids = get_categories(CATEGORY)
@@ -564,6 +566,26 @@ def get_categories(topic):
         raise Exception('Please provide one of the following arguments: world, science, tech, business, uk, us')
 
     return categories
+
+
+def generate_ossummary(article):
+    """
+    This function takes an article as input and returns a one sentence summary of the article.
+    """
+    prompt = (f"Please generate a one sentence summary of the following article. The summary must be completely unbiased and written neutrally: {article}")
+    response = openai.ChatCompletion.create(
+        model="gpt-3.5-turbo",
+        messages=[
+            {"role": "user", "content": prompt},
+        ],
+        temperature=0,
+        top_p=1,
+        frequency_penalty=0,
+        presence_penalty=0
+    )
+    summary = response['choices'][0]['message']['content']
+    # print(summary)
+    return summary
 
 
 def generate_image(headline):
