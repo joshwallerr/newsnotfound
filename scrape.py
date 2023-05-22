@@ -56,9 +56,11 @@ def headlines_links(urls):
                 loop_count += 1
 
         if 'newscientist.com' in url:
-            for article in soup.find_all('div', class_='card__content'):
-                headline_text = article.find('h2', class_='card__heading').text
-                headline_link = 'https://www.newscientist.com' + article.find('a')['href']
+            for article in soup.find_all('a', class_='CardLink'):
+                headline_text = article.find('h3', class_='Card__Title').text
+                headline_link = article['href']
+                if headline_link[0] == '/':
+                    headline_link = 'https://www.newscientist.com' + headline_link
                 all_headlines_links[headline_text] = headline_link
 
         if 'scitechdaily.com' in url:
@@ -401,6 +403,22 @@ def headlines_links(urls):
                     if headline_link[0] == '/':
                         headline_link = 'https://www.naturalgasworld.com' + headline_link
                     all_headlines_links[headline_text] = headline_link
+            
+        if 'h2-view.com' in url:
+            for article in soup.find_all('h3', class_="story-list-article--title"):
+                headline_text = article.find('a').text
+                headline_link = article.find('a')['href']
+                if headline_link[0] == '/':
+                    headline_link = 'https://www.h2-view.com' + headline_link
+                all_headlines_links[headline_text] = headline_link
+
+        if 'hydrogeninsight.com' in url:
+            for article in soup.find_all('a', class_="card-link text-reset"):
+                headline_text = article.text
+                headline_link = article['href']
+                if headline_link[0] == '/':
+                    headline_link = 'https://www.hydrogeninsight.com' + headline_link
+                all_headlines_links[headline_text] = headline_link
 
     return all_headlines_links
 
@@ -485,12 +503,11 @@ def scrape_articles(headlines, headlines_links):
                     temp_article += "\n\n" + text
 
             if 'newscientist.com' in url:
-                article_div = soup.find('div', class_='article__content')
+                article_div = soup.find('section', class_='ArticleContent zephr-article-content')
                 for p in article_div.find_all('p'):
-                    text = p.get_text()
-                    if "Read more" in text or 'Journal reference' in text or 'More on these topics' in text:
-                            continue
-                    temp_article += "\n\n" + text
+                    if not p.attrs:
+                        text = p.get_text()
+                        temp_article += "\n\n" + text
 
             if 'scitechdaily.com' in url:
                 article_div = soup.find('div', class_='entry-content clearfix')
@@ -747,6 +764,19 @@ def scrape_articles(headlines, headlines_links):
                     if child.name == 'p':
                         text = child.get_text()
                         temp_article += '\n\n' + text
+
+            if 'h2-view.com' in url:
+                article_div = soup.find('div', class_='article-content')
+                for child in article_div.children:
+                    if child.name == 'p':
+                        text = child.get_text()
+                        temp_article += '\n\n' + text
+
+            if 'hydrogeninsight.com' in url:
+                article_div = soup.find('div', class_='article-body')
+                for p in article_div.find_all('p'):
+                    text = p.get_text()
+                    temp_article += '\n\n' + text
 
             articles.append(temp_article)
         except:

@@ -66,6 +66,7 @@ See [`load_headlines.py`](https://github.com/joshwallerr/newsnotfound/blob/main/
 | 25 11 * * *  | At 11:25                         | python3 app.py finance_energy_solar |
 | 30 11 * * *  | At 11:30                         | python3 app.py finance_energy_wind  |
 | 35 11 * * *  | At 11:35                         | python3 app.py finance_energy_gas   |
+| 40 11 * * *  | At 11:40                         | python3 app.py finance_energy_hydro |
 
 ## Countribution
 
