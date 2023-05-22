@@ -383,6 +383,25 @@ def headlines_links(urls):
                     headline_link = 'https://www.windpowermonthly.com' + headline_link
                 all_headlines_links[headline_text] = headline_link
 
+        if 'www.gasworld.com' in url:
+            for article in soup.find_all('h3', class_="story-list-article--title"):
+                headline_text = article.find('a').text
+                headline_link = article.find('a')['href']
+                if headline_link[0] == '/':
+                    headline_link = 'https://www.gasworld.com' + headline_link
+                all_headlines_links[headline_text] = headline_link
+
+        if 'naturalgasworld.com' in url:
+            for span in soup.find_all('span', class_="ribbon complimentary"):
+                article = span.find_parents('article')[0]  # [0] to get the first (and in this case, the only) matching ancestor
+                headline = article.find('h2', class_="u-ttu")
+                if headline:
+                    headline_text = headline.find('a').text
+                    headline_link = headline.find('a')['href']
+                    if headline_link[0] == '/':
+                        headline_link = 'https://www.naturalgasworld.com' + headline_link
+                    all_headlines_links[headline_text] = headline_link
+
     return all_headlines_links
 
 
@@ -713,6 +732,21 @@ def scrape_articles(headlines, headlines_links):
                 for p in article_div.find_all('p'):
                     text = p.get_text()
                     temp_article += '\n\n' + text
+
+            if 'www.gasworld.com' in url:
+                article_div = soup.find('div', class_='article-content')
+                for p in article_div.find_all('p'):
+                    text = p.get_text()
+                    if 'read more:' in text.lower():
+                        continue
+                    temp_article += '\n\n' + text
+
+            if 'naturalgasworld.com' in url:
+                article_div = soup.find('article', class_='content full')
+                for child in article_div.children:
+                    if child.name == 'p':
+                        text = child.get_text()
+                        temp_article += '\n\n' + text
 
             articles.append(temp_article)
         except:

@@ -136,6 +136,12 @@ finance_energy_wind_urls = [
     'https://www.windpowermonthly.com/search/articles?NewsTypes=1&HeadlinesOnly=false',
 ]
 
+finance_energy_gas_urls = [
+    'https://www.reuters.com/tags/gas/',
+    'https://www.gasworld.com/topics/all-news/',
+    'https://www.naturalgasworld.com/news',
+]
+
 all_urls = {
     'world': world_urls,
     'science': science_urls,
@@ -156,6 +162,7 @@ all_urls = {
     'technology': technology_urls,
     'finance_energy_solar': finance_energy_solar_urls,
     'finance_energy_wind': finance_energy_wind_urls,
+    'finance_energy_gas': finance_energy_gas_urls,
 }
 
 all_headlines_links = {}
