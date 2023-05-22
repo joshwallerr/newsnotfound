@@ -359,6 +359,30 @@ def headlines_links(urls):
                     headline_link = 'https://www.solarpowerworldonline.com' + headline_link
                 all_headlines_links[headline_text] = headline_link
 
+        if 'rechargenews.com' in url:
+            for article in soup.find_all('a', class_="card-link text-reset"):
+                headline_text = article.text
+                headline_link = article['href']
+                if headline_link[0] == '/':
+                    headline_link = 'https://www.rechargenews.com' + headline_link
+                all_headlines_links[headline_text] = headline_link
+
+        if 'offshorewind.biz' in url:
+            for article in soup.find_all('a', class_="card__link"):
+                headline_text = article.text
+                headline_link = article['href']
+                if headline_link[0] == '/':
+                    headline_link = 'https://www.offshorewind.biz' + headline_link
+                all_headlines_links[headline_text] = headline_link
+
+        if 'windpowermonthly.com' in url:
+            for article in soup.find_all('p', class_="articleLink"):
+                headline_text = article.find('a').text
+                headline_link = article.find('a')['href']
+                if headline_link[0] == '/':
+                    headline_link = 'https://www.windpowermonthly.com' + headline_link
+                all_headlines_links[headline_text] = headline_link
+
     return all_headlines_links
 
 
@@ -665,6 +689,27 @@ def scrape_articles(headlines, headlines_links):
 
             if 'solarpowerworldonline.com' in url:
                 article_div = soup.find('div', class_='entry-content')
+                for p in article_div.find_all('p'):
+                    text = p.get_text()
+                    temp_article += '\n\n' + text
+
+            if 'rechargenews.com' in url:
+                article_div = soup.find('div', class_='article-body')
+                for p in article_div.find_all('p'):
+                    text = p.get_text()
+                    temp_article += '\n\n' + text
+            
+            if 'offshorewind.biz' in url:
+                article_div = soup.find('div', class_='wp-content')
+                for element in article_div.children:
+                    if element.name == 'p':
+                        text = element.get_text()
+                        temp_article += '\n\n' + text
+                    elif element.name == 'div' and 'section' in element.get('class', []):
+                        break
+
+            if 'windpowermonthly.com' in url:
+                article_div = soup.find('div', class_='ArticleBodyPaywall')
                 for p in article_div.find_all('p'):
                     text = p.get_text()
                     temp_article += '\n\n' + text

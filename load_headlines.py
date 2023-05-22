@@ -129,6 +129,13 @@ finance_energy_solar_urls = [
     'https://www.solarpowerworldonline.com/category/industry-news/',
 ]
 
+finance_energy_wind_urls = [
+    'https://www.reuters.com/tags/wind/',
+    'https://www.rechargenews.com/latest',
+    'https://www.offshorewind.biz/news/',
+    'https://www.windpowermonthly.com/search/articles?NewsTypes=1&HeadlinesOnly=false',
+]
+
 all_urls = {
     'world': world_urls,
     'science': science_urls,
@@ -148,6 +155,7 @@ all_urls = {
     'uk_politics': uk_politics_urls,
     'technology': technology_urls,
     'finance_energy_solar': finance_energy_solar_urls,
+    'finance_energy_wind': finance_energy_wind_urls,
 }
 
 all_headlines_links = {}
