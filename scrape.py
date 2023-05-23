@@ -41,7 +41,7 @@ def headlines_links(urls):
                 headline = article.find('a', class_='u-faux-block-link__overlay js-headline-text')
                 headline_text = headline.text
                 headline_link = headline['href']
-                if '/live/' in headline_link.lower():
+                if '/live/' in headline_link.lower() or 'first thing:' in headline_text.lower():
                     continue
                 all_headlines_links[headline_text] = headline_link
 
