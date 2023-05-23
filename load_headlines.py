@@ -148,6 +148,14 @@ finance_energy_hydro_urls = [
     'https://www.hydrogeninsight.com/latest',
 ]
 
+china_urls = [
+    'https://www.reuters.com/world/china/',
+    'https://www.bbc.co.uk/news/world/asia/china',
+    'https://www.theguardian.com/world/china',
+    'https://www.independent.co.uk/topic/china',
+    'https://apnews.com/hub/china',
+]
+
 all_urls = {
     'world': world_urls,
     'science': science_urls,
@@ -170,6 +178,7 @@ all_urls = {
     'finance_energy_wind': finance_energy_wind_urls,
     'finance_energy_gas': finance_energy_gas_urls,
     'finance_energy_hydro': finance_energy_hydro_urls,
+    'china': china_urls,
 }
 
 all_headlines_links = {}
