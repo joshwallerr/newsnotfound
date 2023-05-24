@@ -1,5 +1,7 @@
 import requests
 from bs4 import BeautifulSoup
+from requests_html import HTMLSession
+
 
 def headlines_links(urls):
     """
@@ -262,7 +264,7 @@ def headlines_links(urls):
             article_div = soup.find('div', class_="column1")
             for article in article_div.find_all('div', class_="story-content"):
                 headline_text = article.find('h3').text
-                headline_link = 'https://www.reuters.com/' + article.find('a')['href']
+                headline_link = 'https://www.reuters.com' + article.find('a')['href']
                 all_headlines_links[headline_text] = headline_link
 
         if 'brazilian.report' in url:
@@ -418,6 +420,49 @@ def headlines_links(urls):
                 headline_link = article['href']
                 if headline_link[0] == '/':
                     headline_link = 'https://www.hydrogeninsight.com' + headline_link
+                all_headlines_links[headline_text] = headline_link
+
+        if 'investing.com' in url:
+            session = HTMLSession()
+            headers = {
+                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3"
+            }
+            response = session.get(url, headers=headers)
+            response.html.render()
+
+            article_div = response.html.find('div.largeTitle', first=True)
+            for article in article_div.find('a.title'):
+                headline_text = article.text
+                headline_link = article.attrs['href']
+                if 'invst.ly' in headline_link:
+                    continue
+                if headline_link[0] == '/':
+                    headline_link = 'https://uk.investing.com' + headline_link
+                all_headlines_links[headline_text] = headline_link
+
+        if 'spglobal.com' in url:
+            for article in soup.find_all('div', class_="newsId"):
+                headline_text = article.find('h2').text
+                headline_link = article.find('a')['href']
+                if 'plattsinfo' in headline_link:
+                    continue
+                if headline_link[0] == '/':
+                    headline_link = 'https://www.spglobal.com' + headline_link
+                all_headlines_links[headline_text] = headline_link
+
+        if 'fxstreet.com' in url:
+            session = HTMLSession()
+            headers = {
+                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3"
+            }
+            response = session.get(url, headers=headers)
+            response.html.render()
+
+            for article in response.html.find('h4.fxs_headline_tiny'):
+                headline_text = article.find('a', first=True).text
+                headline_link = article.find('a', first=True).attrs['href']
+                if headline_link[0] == '/':
+                    headline_link = 'https://www.fxstreet.com' + headline_link
                 all_headlines_links[headline_text] = headline_link
 
     return all_headlines_links
@@ -777,6 +822,32 @@ def scrape_articles(headlines, headlines_links):
                 for p in article_div.find_all('p'):
                     text = p.get_text()
                     temp_article += '\n\n' + text
+
+            if 'investing.com' in url:
+                session = HTMLSession()
+                headers = {
+                    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3"
+                }
+                response = session.get(url, headers=headers)
+                response.html.render()
+
+                article_div = response.html.find('div.articlePage', first=True)
+                for p in article_div.find('p'):
+                    text = p.text
+                    temp_article += '\n\n' + text
+
+            if 'spglobal.com' in url:
+                article_div = soup.find('div', class_='article__content')
+                for p in article_div.find_all('p'):
+                    text = p.get_text()
+                    temp_article += '\n\n' + text
+
+            if 'fxstreet.com' in url:
+                article_div = soup.find('div', class_='fxs_article_content')
+                for child in article_div.children:
+                    if child.name == 'p':
+                        text = child.get_text()
+                        temp_article += '\n\n' + text
 
             articles.append(temp_article)
         except:

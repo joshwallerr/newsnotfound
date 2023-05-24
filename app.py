@@ -27,7 +27,26 @@ from choose_headlines import find_most_suitable_headlines
 basedir = path.abspath(path.dirname(__file__))
 load_dotenv(path.join(basedir, '.env'))
 
-api_key = environ.get('OPENAI_API_KEY') 
+with open('api_picker.txt', 'r+') as f:
+    content = f.read().strip()
+    if content == '1':
+        api_key = environ.get('OPENAI_API_KEY')
+        print('using key 1')
+    elif content == '2':
+        api_key = environ.get('OPENAI_API_KEY_2')
+        print('using key 2')
+    else:
+        raise Exception('No API key available')
+
+    # Seek to the beginning of the file before writing
+    f.seek(0)
+
+    # Write to the file
+    f.write('2' if content == '1' else '1')
+
+    # Truncate the file to the current position to remove any leftover characters
+    f.truncate()
+
 openai.api_key = api_key
 
 wordpress_user = environ.get('WP_USER')
@@ -153,7 +172,7 @@ def main():
     else:
         raise Exception('Could not push to Wordpress')
 
-    social_exclusions = ['tyneside', 'sunderland', 'worcester', 'bedford', 'norwich', 'west_yorkshire', 'plymouth', 'india', 'brazil', 'turkey', 'uk', 'world', 'science', 'us', 'uk_politics', 'technology', 'finance_energy_solar', 'finance_energy_wind', 'finance_energy_gas', 'finance_energy_hydro', 'china']
+    social_exclusions = ['tyneside', 'sunderland', 'worcester', 'bedford', 'norwich', 'west_yorkshire', 'plymouth', 'india', 'brazil', 'turkey', 'uk', 'world', 'science', 'us', 'uk_politics', 'technology', 'finance_energy_solar', 'finance_energy_wind', 'finance_energy_gas', 'finance_energy_hydro', 'china', 'finance_commodities']
 
     if CATEGORY in social_exclusions:
         return
@@ -250,6 +269,9 @@ def generate_article(brief):
     """
     prompt = (f"Based on the below brief, please generate me a whole news article for use on a news company's website. The article must be completely unbiased and wrote from a neutral point of view. Please make the article as long and detailed as possible, with as much information as you can fit. Do not write any conclusion. Do not make any assumptions or add any suggestive language. Strictly stick to the facts given to you in the brief. Please write in the inverted pyramid format, and lay the content out so that each sentence is its own paragraph. Please also try to ensure no more than 25% of sentences contain more than 20 words:\n\n{brief}")
 
+    api_key = environ.get('OPENAI_API_KEY')
+    print('switching to api key 1')
+
     response = openai.ChatCompletion.create(
         model="gpt-4",
         messages=[
@@ -262,6 +284,13 @@ def generate_article(brief):
     )
 
     article = response['choices'][0]['message']['content']
+
+    with open('api_picker.txt', 'r+') as f:
+        content = f.read().strip()
+        if content == '1':
+            api_key = environ.get('OPENAI_API_KEY_2')
+            print('switching back to api key 2')
+
     return article
 
 
@@ -572,6 +601,8 @@ def get_categories(topic):
         categories = [110]
     elif topic == 'china':
         categories = [111]
+    elif topic == 'finance_commodities':
+        categories = [112]
     else:
         raise Exception('Please provide one of the following arguments: world, science, tech, business, uk, us')
 

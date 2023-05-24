@@ -156,6 +156,13 @@ china_urls = [
     'https://apnews.com/hub/china',
 ]
 
+finance_commodities_urls = [
+    'https://www.reuters.com/news/archive/GCA-Commodities',
+    'https://uk.investing.com/news/commodities-news',
+    'https://www.spglobal.com/commodityinsights/en/market-insights/latest-news',
+    'https://www.fxstreet.com/news?dFR[Category][0]=News&dFR[Tags][0]=Commodities',
+]
+
 all_urls = {
     'world': world_urls,
     'science': science_urls,
@@ -179,6 +186,7 @@ all_urls = {
     'finance_energy_gas': finance_energy_gas_urls,
     'finance_energy_hydro': finance_energy_hydro_urls,
     'china': china_urls,
+    'finance_commodities': finance_commodities_urls,
 }
 
 all_headlines_links = {}
