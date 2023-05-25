@@ -27,7 +27,7 @@ from choose_headlines import find_most_suitable_headlines
 basedir = path.abspath(path.dirname(__file__))
 load_dotenv(path.join(basedir, '.env'))
 
-with open('api_picker.txt', 'r+') as f:
+with open(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'api_picker.txt'), 'r+') as f:
     content = f.read().strip()
     if content == '1':
         api_key = environ.get('OPENAI_API_KEY')
@@ -270,6 +270,7 @@ def generate_article(brief):
     prompt = (f"Based on the below brief, please generate me a whole news article for use on a news company's website. The article must be completely unbiased and wrote from a neutral point of view. Please make the article as long and detailed as possible, with as much information as you can fit. Do not write any conclusion. Do not make any assumptions or add any suggestive language. Strictly stick to the facts given to you in the brief. Please write in the inverted pyramid format, and lay the content out so that each sentence is its own paragraph. Please also try to ensure no more than 25% of sentences contain more than 20 words:\n\n{brief}")
 
     api_key = environ.get('OPENAI_API_KEY')
+    openai.api_key = api_key
     print('switching to api key 1')
 
     response = openai.ChatCompletion.create(
@@ -285,10 +286,11 @@ def generate_article(brief):
 
     article = response['choices'][0]['message']['content']
 
-    with open('api_picker.txt', 'r+') as f:
+    with open(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'api_picker.txt'), 'r+') as f:
         content = f.read().strip()
         if content == '1':
             api_key = environ.get('OPENAI_API_KEY_2')
+            openai.api_key = api_key
             print('switching back to api key 2')
 
     return article
