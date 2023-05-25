@@ -163,6 +163,18 @@ finance_commodities_urls = [
     'https://www.fxstreet.com/news?dFR[Category][0]=News&dFR[Tags][0]=Commodities',
 ]
 
+# commodities_gold_urls = [
+#     'https://www.reuters.com/news/archive/goldMktRpt',
+#     'https://www.fxstreet.com/news/latest/asset?dFR[Category][0]=News&dFR[Tags][0]=XAUUSD',
+#     'https://www.kitco.com/scripts/news/search.pl?headline=gold&Submit=',
+# ]
+
+uk_agriculture_urls = [
+    'https://www.farminguk.com/newslist/news',
+    'https://www.fwi.co.uk/latest/all-the-latest-farming-news',
+    'https://www.agriland.co.uk/latest-farming-news/',
+]
+
 all_urls = {
     'world': world_urls,
     'science': science_urls,
@@ -187,6 +199,7 @@ all_urls = {
     'finance_energy_hydro': finance_energy_hydro_urls,
     'china': china_urls,
     'finance_commodities': finance_commodities_urls,
+    'uk_agriculture': uk_agriculture_urls,
 }
 
 all_headlines_links = {}

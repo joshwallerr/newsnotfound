@@ -172,7 +172,7 @@ def main():
     else:
         raise Exception('Could not push to Wordpress')
 
-    social_exclusions = ['tyneside', 'sunderland', 'worcester', 'bedford', 'norwich', 'west_yorkshire', 'plymouth', 'india', 'brazil', 'turkey', 'uk', 'world', 'science', 'us', 'uk_politics', 'technology', 'finance_energy_solar', 'finance_energy_wind', 'finance_energy_gas', 'finance_energy_hydro', 'china', 'finance_commodities']
+    social_exclusions = ['tyneside', 'sunderland', 'worcester', 'bedford', 'norwich', 'west_yorkshire', 'plymouth', 'india', 'brazil', 'turkey', 'uk', 'world', 'science', 'us', 'uk_politics', 'technology', 'finance_energy_solar', 'finance_energy_wind', 'finance_energy_gas', 'finance_energy_hydro', 'china', 'finance_commodities', 'uk_agriculture']
 
     if CATEGORY in social_exclusions:
         return
@@ -605,6 +605,8 @@ def get_categories(topic):
         categories = [111]
     elif topic == 'finance_commodities':
         categories = [112]
+    elif topic == 'uk_agriculture':
+        categories = [116]
     else:
         raise Exception('Please provide one of the following arguments: world, science, tech, business, uk, us')
 
@@ -647,20 +649,22 @@ def generate_image(headline):
     if stability_api_key is None:
         raise Exception("Missing Stability API key.")
 
-    # Generate unique prompt
-    prompt = (f'write me a short, one sentence long text-to-image prompt that best visualises the following headline: {headline}\n\nThe image will be in the style of pixel art, but there is no need to specify this.\n\nKeep it extremely simple and dont be too specific.\n\nThe image engine does not handle words well, so under no circumstances should you ask it to write words onto the image.\n\nFor best results, do not go into detail.')
-    response = openai.ChatCompletion.create(
-        model="gpt-3.5-turbo",
-        messages=[
-            {"role": "user", "content": prompt},
-        ],
-        temperature=0.3,
-        top_p=1,
-        frequency_penalty=0,
-        presence_penalty=0
-    )
-    sd_prompt = response['choices'][0]['message']['content']
-
+    try:
+        # Generate unique prompt
+        prompt = (f'write me a short, one sentence long text-to-image prompt that best visualises the following headline: {headline}\n\nThe image will be in the style of pixel art, but there is no need to specify this.\n\nKeep it extremely simple and dont be too specific.\n\nThe image engine does not handle words well, so under no circumstances should you ask it to write words onto the image.\n\nFor best results, do not go into detail.')
+        response = openai.ChatCompletion.create(
+            model="gpt-3.5-turbo",
+            messages=[
+                {"role": "user", "content": prompt},
+            ],
+            temperature=0.3,
+            top_p=1,
+            frequency_penalty=0,
+            presence_penalty=0
+        )
+        sd_prompt = response['choices'][0]['message']['content']
+    except:
+        sd_prompt = (f"an image that best visualises the following news headline: {headline}")
 
     response = requests.post(
         f"{api_host}/v1/generation/{engine_id}/text-to-image",

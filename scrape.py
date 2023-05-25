@@ -72,7 +72,7 @@ def headlines_links(urls):
                 headline_link = headline['href']
                 all_headlines_links[headline_text] = headline_link
 
-        if 'reuters.com' in url and '/archive/' not in url:
+        if 'reuters.com' in url and '/archive/' not in url and '/markets/' not in url:
             for article in soup.find_all('a', attrs={"data-testid": "Heading"}):
                 try:
                     headline_text = article.select_one('span').text
@@ -260,12 +260,19 @@ def headlines_links(urls):
                 headline_link = 'https://www.aljazeera.com' + article['href']
                 all_headlines_links[headline_text] = headline_link
 
-        if 'reuters.com' in url and '/archive/' in url:
+        if 'reuters.com' in url and '/archive/' in url and '/markets/' not in url:
             article_div = soup.find('div', class_="column1")
             for article in article_div.find_all('div', class_="story-content"):
                 headline_text = article.find('h3').text
                 headline_link = 'https://www.reuters.com' + article.find('a')['href']
                 all_headlines_links[headline_text] = headline_link
+
+        # if 'reuters.com' in url and '/archive/' not in url and '/markets/' in url:
+        #     article_div = soup.find('div', class_="column1")
+        #     for article in article_div.find_all('div', class_="story-content"):
+        #         headline_text = article.find('h3').text
+        #         headline_link = 'https://www.reuters.com' + article.find('a')['href']
+        #         all_headlines_links[headline_text] = headline_link
 
         if 'brazilian.report' in url:
             article_div = soup.find('div', class_="col-main")
@@ -463,6 +470,48 @@ def headlines_links(urls):
                 headline_link = article.find('a', first=True).attrs['href']
                 if headline_link[0] == '/':
                     headline_link = 'https://www.fxstreet.com' + headline_link
+                all_headlines_links[headline_text] = headline_link
+
+        if 'metalsdaily.com' in url:
+            for article in soup.find_all('div', class_="newsTable ns_NewsTable"):
+                headline_text = article.find('span', class_="Title").text
+                headline_link = article.find('a', class_="NewsItem")['href']
+                if headline_link[0] == '/':
+                    headline_link = 'https://www.metalsdaily.com' + headline_link
+                all_headlines_links[headline_text] = headline_link
+        
+        if 'kitco.com' in url:
+            for article in soup.find_all('a', class_="newslink"):
+                headline_text = article.text
+                headline_link = article['href']
+                if headline_link[0] == '/':
+                    headline_link = 'https://www.kitco.com' + headline_link
+                all_headlines_links[headline_text] = headline_link
+
+        if 'farminguk.com' in url:
+            for article in soup.find_all('h4', class_="post-title"):
+                headline_text = article.find('a').text
+                headline_link = article.find('a')['href']
+                if headline_link[0] == '/':
+                    headline_link = 'https://www.farminguk.com' + headline_link
+                all_headlines_links[headline_text] = headline_link
+
+        if 'fwi.co.uk' in url:
+            for article in soup.find_all('div', class_="card-info"):
+                for child in article.children:
+                    if child.name == 'a':
+                        headline_text = child.find('h2').text
+                        headline_link = child['href']
+                        if headline_link[0] == '/':
+                            headline_link = 'https://www.fwi.co.uk' + headline_link
+                        all_headlines_links[headline_text] = headline_link
+
+        if 'agriland.co.uk' in url:
+            for article in soup.find_all('div', class_="article"):
+                headline_text = article.find('h4').text
+                headline_link = article.find('a')['href']
+                if headline_link[0] == '/':
+                    headline_link = 'https://www.agriland.co.uk' + headline_link
                 all_headlines_links[headline_text] = headline_link
 
     return all_headlines_links
@@ -844,6 +893,34 @@ def scrape_articles(headlines, headlines_links):
 
             if 'fxstreet.com' in url:
                 article_div = soup.find('div', class_='fxs_article_content')
+                for child in article_div.children:
+                    if child.name == 'p':
+                        text = child.get_text()
+                        temp_article += '\n\n' + text
+
+            if 'kitco.com' in url:
+                article_div = soup.find('article', {"itemprop": "articleBody"})
+                for child in article_div.children:
+                    if child.name == 'p':
+                        text = child.get_text()
+                        temp_article += '\n\n' + text
+
+            if 'farminguk.com' in url:
+                article_div = soup.find('div', class_='news-content')
+                for child in article_div.children:
+                    if child.name == 'p':
+                        text = child.get_text()
+                        temp_article += '\n\n' + text
+
+            if 'fwi.co.uk' in url:
+                article_div = soup.find('div', class_='article-body')
+                for child in article_div.children:
+                    if child.name == 'p':
+                        text = child.get_text()
+                        temp_article += '\n\n' + text
+
+            if 'agriland.co.uk' in url:
+                article_div = soup.find('main', class_='article-body')
                 for child in article_div.children:
                     if child.name == 'p':
                         text = child.get_text()
