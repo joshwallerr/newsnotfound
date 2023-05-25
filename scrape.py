@@ -514,6 +514,40 @@ def headlines_links(urls):
                     headline_link = 'https://www.agriland.co.uk' + headline_link
                 all_headlines_links[headline_text] = headline_link
 
+        try:
+            if 'agdaily.com' in url:
+                article_div = soup.find('section', class_="col-sm-8 list_posts")
+                for article in article_div.find_all('header'):
+                    h1 = article.find('h1')
+                    headline_text = h1.find('a').text
+                    headline_link = h1.find('a')['href']
+                    if headline_link[0] == '/':
+                        headline_link = 'https://www.agdaily.com' + headline_link
+                    all_headlines_links[headline_text] = headline_link
+        except:
+            continue
+
+        # if 'agriculture.com' in url:
+        #     for article in article_div.find_all('span', class_="field-content"):
+        #         print('article')
+        #         headline_text = article.find('a').text
+        #         headline_link = article.find('a')['href']
+        #         if headline_link[0] == '/':
+        #             headline_link = 'https://www.agriculture.com' + headline_link
+        #         all_headlines_links[headline_text] = headline_link
+
+        if 'agweb.com' in url:
+            loop_count = 0
+            for article in soup.find_all('a', class_="field--name-title"):
+                if loop_count > 14:
+                    break
+                headline_text = article.text
+                headline_link = article['href']
+                if headline_link[0] == '/':
+                    headline_link = 'https://www.agweb.com' + headline_link
+                all_headlines_links[headline_text] = headline_link
+                loop_count += 1
+
     return all_headlines_links
 
 
@@ -924,6 +958,25 @@ def scrape_articles(headlines, headlines_links):
                 for child in article_div.children:
                     if child.name == 'p':
                         text = child.get_text()
+                        temp_article += '\n\n' + text
+
+            if 'agweb.com' in url:
+                article_div = soup.find('div', class_='field--name-body')
+                for child in article_div.children:
+                    if child.name == 'p':
+                        text = child.get_text()
+                        if 'agritalk' in text.lower() or 'related story:' in text.lower():
+                            continue
+                        temp_article += '\n\n' + text
+
+            if 'agdaily.com' in url:
+                article_div = soup.find('div', class_='col-sm-8 article-content')
+                real_div = article_div.find_all('div')[0]
+                for child in real_div.children:
+                    if child.name == 'p':
+                        text = child.get_text()
+                        if 'related:' in text.lower():
+                            continue
                         temp_article += '\n\n' + text
 
             articles.append(temp_article)

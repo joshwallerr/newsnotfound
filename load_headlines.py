@@ -175,6 +175,12 @@ uk_agriculture_urls = [
     'https://www.agriland.co.uk/latest-farming-news/',
 ]
 
+us_agriculture_urls = [
+    'https://www.agweb.com/news',
+    'https://www.agdaily.com/category/news/',
+    # 'https://www.farmprogress.com/latest-news', # add scraping for this and done with this category
+]
+
 all_urls = {
     'world': world_urls,
     'science': science_urls,
@@ -200,6 +206,7 @@ all_urls = {
     'china': china_urls,
     'finance_commodities': finance_commodities_urls,
     'uk_agriculture': uk_agriculture_urls,
+    'us_agriculture': us_agriculture_urls,
 }
 
 all_headlines_links = {}

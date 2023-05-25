@@ -70,6 +70,7 @@ See [`load_headlines.py`](https://github.com/joshwallerr/newsnotfound/blob/main/
 | 30 16 * * *  | At 16:30                         | python3 app.py china                |
 | 50 12 * * *  | At 12:50                         | python3 app.py finance_commodities  |
 | 10 13 * * *  | At 13:10                         | python3 app.py uk_agriculture       |
+| 20 13 * * *  | At 13:20                         | python3 app.py us_agriculture       |
 
 ## Countribution
 
