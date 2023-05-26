@@ -178,7 +178,7 @@ uk_agriculture_urls = [
 us_agriculture_urls = [
     'https://www.agweb.com/news',
     'https://www.agdaily.com/category/news/',
-    # 'https://www.farmprogress.com/latest-news', # add scraping for this and done with this category
+    'https://www.farmprogress.com/latest-news',
 ]
 
 all_urls = {

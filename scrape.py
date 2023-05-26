@@ -548,6 +548,20 @@ def headlines_links(urls):
                 all_headlines_links[headline_text] = headline_link
                 loop_count += 1
 
+        # add loop up to 16 times
+        if 'farmprogress.com' in url:
+            loop_count = 0
+            article_div = soup.find('div', class_="ListContent-Body")
+            for article in article_div.find_all('a', {"data-testid": "preview-default-title"}):
+                if loop_count > 16:
+                    break
+                headline_text = article.text
+                headline_link = article['href']
+                if headline_link[0] == '/':
+                    headline_link = 'https://www.farmprogress.com' + headline_link
+                all_headlines_links[headline_text] = headline_link
+                loop_count += 1
+
     return all_headlines_links
 
 
@@ -976,6 +990,15 @@ def scrape_articles(headlines, headlines_links):
                     if child.name == 'p':
                         text = child.get_text()
                         if 'related:' in text.lower():
+                            continue
+                        temp_article += '\n\n' + text
+
+            if 'farmprogress.com' in url:
+                article_div = soup.find('div', class_='ContentModule-Wrapper')
+                for child in article_div.children:
+                    if child.name == 'p':
+                        text = child.get_text()
+                        if 'you may also like' in text.lower():
                             continue
                         temp_article += '\n\n' + text
 

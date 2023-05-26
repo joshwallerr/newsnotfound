@@ -14,6 +14,8 @@ import re
 from textblob import TextBlob
 import base64
 import requests
+from requests.adapters import HTTPAdapter
+from requests.packages.urllib3.util.retry import Retry
 import io
 from PIL import Image
 from stability_sdk import client
@@ -205,6 +207,8 @@ def choose_longest(articles):
         if len(article) > longest:
             longest = len(article)
             longest_article[0] = article
+
+    # check the index of the chosen article and return it to the main function. Then update chosen headlines to inculde only the 3rd headline for example, if the third article was the longest.
 
     return longest_article
 
@@ -713,13 +717,18 @@ def upload_image():
     This function uploads the image file to WordPress and returns the image ID and source URL.
     """
     endpoint = "https://newsnotfound.com/wp-json/wp/v2/"
+    session = requests.Session()
+    retry = Retry(total=5, backoff_factor=0.1, status_forcelist=[ 500, 502, 503, 504 ])
+    adapter = HTTPAdapter(max_retries=retry)
+    session.mount('http://', adapter)
+    session.mount('https://', adapter)
 
     with open(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'images', 'image.webp'), "rb") as f:
         file = {
             "file": f,
             "content_type": "image/webp"
         }
-        image_response = requests.post(
+        image_response = session.post(
             endpoint + "media",
             headers=wordpress_header,
             files=file
