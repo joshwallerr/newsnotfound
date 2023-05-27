@@ -562,6 +562,43 @@ def headlines_links(urls):
                 all_headlines_links[headline_text] = headline_link
                 loop_count += 1
 
+        if 'cryptonews.com' in url:
+            article_div = soup.find('div', class_="row", id="load_more_target")
+            for article in article_div.find_all('a', class_="article__title article__title--md article__title--featured"):
+                headline_text = article.find('h4').text
+                headline_link = article['href']
+                if headline_link[0] == '/':
+                    headline_link = 'https://www.cryptonews.com' + headline_link
+                if 'price analysis' in headline_text.lower() or 'recap' in headline_text.lower():
+                    continue
+                all_headlines_links[headline_text] = headline_link
+
+        if 'cryptonews.net' in url:
+            article_div = soup.find('section', class_="col-xs-12 col-sm")
+            for article in article_div.find_all('a', class_="title"):
+                headline_text = article.text
+                headline_link = article['href']
+                if headline_link[0] == '/':
+                    headline_link = 'https://www.cryptonews.net' + headline_link
+                if 'price analysis' in headline_text.lower() or 'recap' in headline_text.lower():
+                    continue
+                all_headlines_links[headline_text] = headline_link
+
+        if 'cryptopotato.com' in url:
+            loop_count = 0
+            article_div = soup.find('section', id="main")
+            for article in article_div.find_all('h3', class_="rpwe-title"):
+                if loop_count > 16:
+                    break
+                headline_text = article.find('a').text
+                headline_link = article.find('a')['href']
+                if headline_link[0] == '/':
+                    headline_link = 'https://www.cryptopotato.com' + headline_link
+                if 'price analysis' in headline_text.lower() or 'recap' in headline_text.lower():
+                    continue
+                all_headlines_links[headline_text] = headline_link
+                loop_count += 1
+
     return all_headlines_links
 
 
@@ -1000,6 +1037,31 @@ def scrape_articles(headlines, headlines_links):
                         text = child.get_text()
                         if 'you may also like' in text.lower():
                             continue
+                        temp_article += '\n\n' + text
+
+            if 'cryptonews.com' in url:
+                article_div = soup.find('div', class_='article-single__content category_contents_details')
+                for child in article_div.children:
+                    if child.name == 'p':
+                        text = child.get_text()
+                        temp_article += '\n\n' + text
+
+            if 'cryptonews.net' in url:
+                article_div = soup.find('div', class_='news-item detail content_text')
+                for child in article_div.children:
+                    if child.name == 'p':
+                        text = child.get_text()
+                        temp_article += '\n\n' + text
+
+            if 'cryptopotato.com' in url:
+                article_div = soup.find('div', class_='coincodex-content')
+                for p in article_div.find_all('p'):
+                    text = p.get_text()
+                    temp_article += '\n\n' + text
+
+                for li in article_div.find_all('li'):
+                    if 'rp4wp-col' not in li.get('class', []):
+                        text = li.get_text()
                         temp_article += '\n\n' + text
 
             articles.append(temp_article)

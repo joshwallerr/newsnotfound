@@ -181,6 +181,12 @@ us_agriculture_urls = [
     'https://www.farmprogress.com/latest-news',
 ]
 
+crypto_urls = [
+    'https://cryptonews.com/news/',
+    'https://cryptonews.net/',
+    'https://cryptopotato.com/crypto-news/',
+]
+
 all_urls = {
     'world': world_urls,
     'science': science_urls,
@@ -207,6 +213,7 @@ all_urls = {
     'finance_commodities': finance_commodities_urls,
     'uk_agriculture': uk_agriculture_urls,
     'us_agriculture': us_agriculture_urls,
+    'crypto': crypto_urls,
 }
 
 all_headlines_links = {}
