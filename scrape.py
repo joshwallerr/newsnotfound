@@ -98,30 +98,33 @@ def headlines_links(urls):
                     all_headlines_links[headline_text] = headline_link
 
         if 'eu.usatoday.com' in url:
-            # Get hero item
-            main_hero = soup.find('div', class_='section-helper-flex section-helper-row p12-container')
-            headline_text = main_hero.find('div', class_='display-4 p12-title').text
-            headline_link = main_hero.find('a', class_='p12-container-link')['href']
-            all_headlines_links[headline_text] = 'https://eu.usatoday.com' + headline_link
+            try:
+                # Get hero item
+                main_hero = soup.find('div', class_='section-helper-flex section-helper-row p12-container')
+                headline_text = main_hero.find('div', class_='display-4 p12-title').text
+                headline_link = main_hero.find('a', class_='p12-container-link')['href']
+                all_headlines_links[headline_text] = 'https://eu.usatoday.com' + headline_link
 
-            # Get secondary hero items
-            hero_two = soup.find('div', class_='hero-slot-two')
-            headline_text = hero_two.find('div', class_='display-6 p13-title').text
-            headline_link = hero_two.find('a', class_='section-helper-flex section-helper-row p13-container')['href']
-            all_headlines_links[headline_text] = 'https://eu.usatoday.com' + headline_link
+                # Get secondary hero items
+                hero_two = soup.find('div', class_='hero-slot-two')
+                headline_text = hero_two.find('div', class_='display-6 p13-title').text
+                headline_link = hero_two.find('a', class_='section-helper-flex section-helper-row p13-container')['href']
+                all_headlines_links[headline_text] = 'https://eu.usatoday.com' + headline_link
 
-            # Get third hero items
-            hero_three = soup.find('div', class_='hero-slot-three')
-            headline_text = hero_three.find('div', class_='display-6 p13-title').text
-            headline_link = hero_three.find('a', class_='section-helper-flex section-helper-row p13-container')['href']
-            all_headlines_links[headline_text] = 'https://eu.usatoday.com' + headline_link
+                # Get third hero items
+                hero_three = soup.find('div', class_='hero-slot-three')
+                headline_text = hero_three.find('div', class_='display-6 p13-title').text
+                headline_link = hero_three.find('a', class_='section-helper-flex section-helper-row p13-container')['href']
+                all_headlines_links[headline_text] = 'https://eu.usatoday.com' + headline_link
 
-            # Get all other headlines
-            for article in soup.find_all('a', class_='p1-container'):
-                headline = article.find('div', class_='p1-title-spacer')
-                headline_text = headline.text
-                headline_link = 'https://eu.usatoday.com' + article['href']
-                all_headlines_links[headline_text] = headline_link
+                # Get all other headlines
+                for article in soup.find_all('a', class_='p1-container'):
+                    headline = article.find('div', class_='p1-title-spacer')
+                    headline_text = headline.text
+                    headline_link = 'https://eu.usatoday.com' + article['href']
+                    all_headlines_links[headline_text] = headline_link
+            except:
+                continue
 
         if 'newsnotfound.com' in url:
             article_div = soup.find('div', class_='main-banner-block-posts banner-trailing-posts')

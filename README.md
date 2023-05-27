@@ -72,6 +72,7 @@ See [`load_headlines.py`](https://github.com/joshwallerr/newsnotfound/blob/main/
 | 10 13 * * *  | At 13:10                         | python3 app.py uk_agriculture       |
 | 20 13 * * *  | At 13:20                         | python3 app.py us_agriculture       |
 | 10 14 * * *  | At 14:10                         | python3 app.py crypto               |
+| 10 16 * * *  | At 16:10                         | python3 app.py us_politics          |
 
 ## Countribution
 

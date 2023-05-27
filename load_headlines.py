@@ -38,7 +38,7 @@ us_urls = [
     'https://www.theguardian.com/us-news',
     'https://www.reuters.com/world/us/',
     'https://www.bbc.co.uk/news/world/us_and_canada',
-    'https://usatoday.com/news/nation/',
+    'https://eu.usatoday.com/news/nation/',
     'https://www.independent.co.uk/news/world/americas',
 ]
 
@@ -187,6 +187,13 @@ crypto_urls = [
     'https://cryptopotato.com/crypto-news/',
 ]
 
+us_politics_urls = [
+    'https://www.reuters.com/news/archive/politicsNews',
+    'https://www.theguardian.com/us-news/us-politics/all',
+    'https://eu.usatoday.com/news/politics/',
+    'https://www.independent.co.uk/news/world/americas/us-politics',
+]
+
 all_urls = {
     'world': world_urls,
     'science': science_urls,
@@ -214,6 +221,7 @@ all_urls = {
     'uk_agriculture': uk_agriculture_urls,
     'us_agriculture': us_agriculture_urls,
     'crypto': crypto_urls,
+    'us_politics': us_politics_urls,
 }
 
 all_headlines_links = {}
