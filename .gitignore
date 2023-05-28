@@ -28,3 +28,5 @@ refresh.py
 .vscode/
 test3.py
 scrape_aggregators.py
+.aws.env
+rebooter.py
