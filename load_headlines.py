@@ -194,6 +194,16 @@ us_politics_urls = [
     'https://www.independent.co.uk/news/world/americas/us-politics',
 ]
 
+uk_construction_urls = [
+    'https://www.constructionnews.co.uk/news/?block_id=0',
+    'https://www.theconstructionindex.co.uk/construction-news',
+    'https://www.constructionenquirer.com/category/news/',
+]
+
+# us_construction_urls = [
+#     'https://www.constructiondive.com/',
+# ]
+
 all_urls = {
     'world': world_urls,
     'science': science_urls,
@@ -222,6 +232,7 @@ all_urls = {
     'us_agriculture': us_agriculture_urls,
     'crypto': crypto_urls,
     'us_politics': us_politics_urls,
+    'uk_construction': uk_construction_urls,
 }
 
 all_headlines_links = {}
