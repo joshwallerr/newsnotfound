@@ -644,6 +644,15 @@ def headlines_links(urls):
                     headline_link = 'https://www.constructiondive.com' + headline_link
                 all_headlines_links[headline_text] = headline_link
 
+        if 'schoolsweek.co.uk' in url:
+            for article in soup.find_all('h3'):
+                headline_text = article.find('a').text
+                headline_link = article.find('a')['href']
+                if headline_link[0] == '/':
+                    headline_link = 'https://schoolsweek.co.uk' + headline_link
+                all_headlines_links[headline_text] = headline_link
+
+
     return all_headlines_links
 
 
@@ -1131,6 +1140,19 @@ def scrape_articles(headlines, headlines_links):
 
             if 'constructiondive.com' in url:
                 article_div = soup.find('div', class_='article-body')
+                for child in article_div.children:
+                    if child.name == 'p':
+                        text = child.get_text()
+                        temp_article += '\n\n' + text
+
+            if 'newsnotfound.com' in url:
+                article_div = soup.find('div', class_='entry-content')
+                for p in article_div.find_all('p'):
+                    text = p.get_text()
+                    temp_article += '\n\n' + text
+
+            if 'schoolsweek.co.uk' in url:
+                article_div = soup.find('div', class_='entry-content')
                 for child in article_div.children:
                     if child.name == 'p':
                         text = child.get_text()

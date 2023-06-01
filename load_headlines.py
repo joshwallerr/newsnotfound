@@ -204,6 +204,12 @@ uk_construction_urls = [
 #     'https://www.constructiondive.com/',
 # ]
 
+uk_education_urls = [
+    "https://www.theguardian.com/education/all",
+    "https://www.bbc.co.uk/news/education",
+    "https://schoolsweek.co.uk/all-news/",
+]
+
 all_urls = {
     'world': world_urls,
     'science': science_urls,
@@ -233,6 +239,7 @@ all_urls = {
     'crypto': crypto_urls,
     'us_politics': us_politics_urls,
     'uk_construction': uk_construction_urls,
+    'uk_education': uk_education_urls,
 }
 
 all_headlines_links = {}
