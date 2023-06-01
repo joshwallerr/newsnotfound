@@ -8,7 +8,7 @@ NewsNotFound is a news website located at https://newsnotfound.com.
 
 We want to build the most unbiased news platform on the internet.
 
-![App Screenshot](http://newsnotfound.com/wp-content/uploads/2023/04/1677003418639-jpeg-e1682077026373.webp)
+![App Screenshot](https://newsnotfound.com/wp-content/uploads/2023/06/Screenshot-from-2023-06-01-06-34-19.png)
 
 Our mission is to lead the way in AI journalism by providing completely neutral and unbiased news articles that can be governed by the public.
 
