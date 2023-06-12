@@ -685,6 +685,36 @@ def headlines_links(urls):
                 all_headlines_links[headline_text] = headline_link
                 loop_count += 1
 
+        if 'thehackernews.com' in url:
+            article_div = soup.find('div', class_="blog-posts clear")
+            for article in article_div.find_all('div', class_="body-post clear"):
+                headline_text = article.find('h2', class_="home-title").text
+                headline_link = article.find('a', class_="story-link")['href']
+                if headline_link[0] == '/':
+                    headline_link = 'https://thehackernews.com' + headline_link
+                all_headlines_links[headline_text] = headline_link
+
+        if 'securityweek.com' in url:
+            article_div = soup.find('div', class_="zox-widget-side-trend-wrap left zoxrel zox100")
+            for article in article_div.find_all('div', class_="zox-art-title"):
+                headline_text = article.find('a').text
+                headline_link = article.find('a')['href']
+                if headline_link[0] == '/':
+                    headline_link = 'https://securityweek.com' + headline_link
+                all_headlines_links[headline_text] = headline_link
+
+        if 'bleepingcomputer.com' in url:
+            loop_count = 0
+            article_div = soup.find('ul', id="bc-home-news-main-wrap")
+            for article in article_div.find_all('h4'):
+                if loop_count > 8:
+                    break
+                headline_text = article.find('a').text
+                headline_link = article.find('a')['href']
+                if headline_link[0] == '/':
+                    headline_link = 'https://www.bleepingcomputer.com' + headline_link
+                all_headlines_links[headline_text] = headline_link
+                loop_count += 1
 
     return all_headlines_links
 
@@ -1200,6 +1230,27 @@ def scrape_articles(headlines, headlines_links):
 
             if 'venturebeat.com' in url:
                 article_div = soup.find('div', class_='article-content')
+                for child in article_div.children:
+                    if child.name == 'p':
+                        text = child.get_text()
+                        temp_article += '\n\n' + text
+
+            if 'thehackernews.com' in url:
+                article_div = soup.find('div', id='articlebody')
+                for child in article_div.children:
+                    if child.name == 'p':
+                        text = child.get_text()
+                        temp_article += '\n\n' + text
+
+            if 'securityweek.com' in url:
+                article_div = soup.find('div', class_='theiaPostSlider_preloadedSlide')
+                for child in article_div.children:
+                    if child.name == 'p':
+                        text = child.get_text()
+                        temp_article += '\n\n' + text
+
+            if 'bleepingcomputer.com' in url:
+                article_div = soup.find('div', class_='articleBody')
                 for child in article_div.children:
                     if child.name == 'p':
                         text = child.get_text()

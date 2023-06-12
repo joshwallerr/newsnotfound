@@ -217,6 +217,12 @@ ai_urls = [
     'https://venturebeat.com/category/ai/',
 ]
 
+cybersecurity_urls = [
+    'https://thehackernews.com/',
+    'https://www.securityweek.com/',
+    'https://www.bleepingcomputer.com/news/security/',
+]
+
 all_urls = {
     'world': world_urls,
     'science': science_urls,
@@ -248,6 +254,7 @@ all_urls = {
     'uk_construction': uk_construction_urls,
     'uk_education': uk_education_urls,
     'ai': ai_urls,
+    'cybersecurity': cybersecurity_urls,
 }
 
 all_headlines_links = {}
