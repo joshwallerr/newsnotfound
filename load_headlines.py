@@ -210,6 +210,13 @@ uk_education_urls = [
     "https://schoolsweek.co.uk/all-news/",
 ]
 
+ai_urls = [
+    'https://www.independent.co.uk/topic/artificial-intelligence',
+    'https://www.bbc.co.uk/news/topics/ce1qrvleleqt',
+    'https://aibusiness.com/',
+    'https://venturebeat.com/category/ai/',
+]
+
 all_urls = {
     'world': world_urls,
     'science': science_urls,
@@ -240,6 +247,7 @@ all_urls = {
     'us_politics': us_politics_urls,
     'uk_construction': uk_construction_urls,
     'uk_education': uk_education_urls,
+    'ai': ai_urls,
 }
 
 all_headlines_links = {}

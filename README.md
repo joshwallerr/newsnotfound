@@ -75,6 +75,7 @@ See [`load_headlines.py`](https://github.com/joshwallerr/newsnotfound/blob/main/
 | 10 16 * * *  | At 16:10                         | python3 app.py us_politics          |
 | 10 17 * * *  | At 17:10                         | python3 app.py uk_construction      |
 | 20 17 * * *  | At 17:20                         | python3 app.py uk_education         |
+| 30 13 * * *  | At 13:30                         | python3 app.py ai                   |
 
 ## Countribution
 

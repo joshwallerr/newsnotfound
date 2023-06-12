@@ -20,13 +20,24 @@ def headlines_links(urls):
                 headline_link = 'https://www.telegraph.co.uk' + headline.get('href')
                 all_headlines_links[headline_text] = headline_link
 
-        if 'bbc.co.uk' in url:
+        if 'bbc.co.uk' in url and '/topics/' not in url:
             for article in soup.find_all('div', class_='gs-c-promo-body'):
                 headline = article.find('h3')
                 headline_text = headline.text
                 headline_link = article.find('a')['href']
                 video = article.find('span', class_='qa-offscreen gs-u-vh')
                 if video:
+                    continue
+                if headline_link[0] == '/':
+                    headline_link = 'https://www.bbc.co.uk' + headline_link
+                all_headlines_links[headline_text] = headline_link
+
+        if 'bbc.co.uk' in url and '/topics/' in url:
+            article_div = soup.find('main', id="main-content")
+            for article in article_div.find_all('a', class_="ssrcss-i9iip6-PromoLink e1f5wbog1"):
+                headline_text = article.text
+                headline_link = article['href']
+                if '/sounds/' in headline_link or 'Video,' in headline_text:
                     continue
                 if headline_link[0] == '/':
                     headline_link = 'https://www.bbc.co.uk' + headline_link
@@ -652,6 +663,28 @@ def headlines_links(urls):
                     headline_link = 'https://schoolsweek.co.uk' + headline_link
                 all_headlines_links[headline_text] = headline_link
 
+        if 'aibusiness.com' in url:
+            article_div = soup.find('div', class_="LatestFeatured-Content LatestFeatured-Content_left")
+            for article in article_div.find_all('a', class_="ListPreview-Title"):
+                headline_text = article.text
+                headline_link = article['href']
+                if headline_link[0] == '/':
+                    headline_link = 'https://aibusiness.com' + headline_link
+                all_headlines_links[headline_text] = headline_link
+
+        if 'venturebeat.com' in url:
+            loop_count = 0
+            article_div = soup.find('div', class_="story-river MainBlock__river")
+            for article in article_div.find_all('a', class_="ArticleListing__title-link"):
+                if loop_count > 16:
+                    break
+                headline_text = article.text
+                headline_link = article['href']
+                if headline_link[0] == '/':
+                    headline_link = 'https://venturebeat.com' + headline_link
+                all_headlines_links[headline_text] = headline_link
+                loop_count += 1
+
 
     return all_headlines_links
 
@@ -1153,6 +1186,20 @@ def scrape_articles(headlines, headlines_links):
 
             if 'schoolsweek.co.uk' in url:
                 article_div = soup.find('div', class_='entry-content')
+                for child in article_div.children:
+                    if child.name == 'p':
+                        text = child.get_text()
+                        temp_article += '\n\n' + text
+            
+            if 'aibusiness.com' in url:
+                article_div = soup.find('div', class_='ContentModule-Wrapper')
+                for child in article_div.children:
+                    if child.name == 'p':
+                        text = child.get_text()
+                        temp_article += '\n\n' + text
+
+            if 'venturebeat.com' in url:
+                article_div = soup.find('div', class_='article-content')
                 for child in article_div.children:
                     if child.name == 'p':
                         text = child.get_text()

@@ -30,3 +30,7 @@ test3.py
 scrape_aggregators.py
 .aws.env
 rebooter.py
+google-chrome-stable_current_amd64.deb
+podcast.py
+api_picker.txt
+podcast/
