@@ -183,7 +183,7 @@ us_agriculture_urls = [
 
 crypto_urls = [
     'https://cryptonews.com/news/',
-    'https://cryptonews.net/',
+#    'https://cryptonews.net/',
     'https://cryptopotato.com/crypto-news/',
 ]
 
