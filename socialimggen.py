@@ -27,12 +27,12 @@ def scrape_rss_feeds(feeds):
         soup = BeautifulSoup(r.content, features='xml')
 
         for item in soup.findAll('item'):
-            if len(item.find_all('category')) != 1:
-                # print('skipping')
+            if len(item.find_all('category')) != 1 and item.find('category').text.lower() not in ['world', 'united kingdom', 'united states', 'science', 'technology', 'teesside news']:
+                print('skipping')
                 continue
 
-            if item.find('category').text.lower() not in ['world', 'united kingdom', 'united states', 'science', 'technology']:
-                # print('not right category')
+            if item.find('category').text.lower() not in ['world', 'united kingdom', 'united states', 'science', 'technology', 'teesside news']:
+                # print()
                 continue
 
             headline = item.find('title').text
@@ -83,6 +83,9 @@ def choose_social_article():
     elif sys.argv[1] == 'us':
         feeds = ["https://newsnotfound.com/united-states/feed"]
         category = ['united states']
+    elif sys.argv[1] == 'teesside':
+        feeds = ["https://newsnotfound.com/united-kingdom/regions-uk/teesside-news/feed/"]
+        category = ['teesside']
     else:
         raise Exception('Invalid cmd line param')
 
@@ -202,8 +205,9 @@ if len(caption_twitter) > 280:
 # print(caption_ig)
 # print(caption_fb)
 
-ig_post_image(caption_ig, image_url)
-fb_post_image(caption, image_url)
+if category != 'TEESSIDE':
+    ig_post_image(caption_ig, image_url)
+    fb_post_image(caption, image_url)
 
 
 client_v1 = get_twitter_conn_v1()
@@ -214,4 +218,3 @@ media = client_v1.media_upload(filename=media_path)
 media_id = media.media_id
 
 client_v2.create_tweet(text=f"{caption_twitter}", media_ids=[media_id])
-
