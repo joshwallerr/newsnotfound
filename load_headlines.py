@@ -171,7 +171,7 @@ finance_commodities_urls = [
 
 uk_agriculture_urls = [
     'https://www.farminguk.com/newslist/news',
-    'https://www.fwi.co.uk/latest/all-the-latest-farming-news',
+    # 'https://www.fwi.co.uk/latest/all-the-latest-farming-news',
     'https://www.agriland.co.uk/latest-farming-news/',
 ]
 
