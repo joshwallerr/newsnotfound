@@ -2,28 +2,6 @@
 
 This is the entire source code for NewsNotFound's article generation process. 
 
-## December 2023 Update
-
-NewsNotFound has been temporarily shut down as of December 5th 2023.
-
-All costs for this project were paid for through personal funding.
-
-My personal financial situation has taken a hit recently, so i can no longer afford to keep the project running.
-
-I do plan on bringing it back as soon as I can, with a new UI and updated functionality.
-
-Whilst i search for a job, I'm working on a few other (less expensive) projects in the background:
-- [DocDecoder](https://chromewebstore.google.com/detail/docdecoder-summarize-web/pbcajhinmaijadgdofjohponnggbkjhh?hl=en)
-- [Neversleep](https://neversleepclothing.com/products/genesis)
-
-I would be incredibly grateful for any support you can offer, whether it's trying out these projects, providing feedback, or even spreading the word.
-
-Your support has been the backbone of NewsNotFound, and I am very thankful for the community that has grown around it.
-
-I look forward to bringing back NewsNotFound better than ever.
-
-Josh
-
 ## What is NewsNotFound?
 
 NewsNotFound was a news website located at https://newsnotfound.com.
